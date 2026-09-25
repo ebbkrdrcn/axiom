@@ -22,6 +22,8 @@ Code blocks are labelled:
 
 | Statement | Meaning | Key rule |
 |---|---|---|
+| `<name>:<Type> = <identity>` | bind a name to an entity | top of the program only; not satisfied → execution ends |
+| `<name>:<Type> = <bound>.<relation>` | bind the target of a relation | same as above |
 | `LOOP:<name>` | repeat the indented body | end of body → start body again; only `BREAK` or `STOP` ends it |
 | `WHEN <subject>.<outcome>` | conditional flow | checked once, when reached; false → skip; no "else" |
 | `FORK` | start concurrent branches (`→` = one branch) | no `JOIN` → continue immediately |
@@ -31,13 +33,14 @@ Code blocks are labelled:
 | `STOP` | end the whole execution | also ends all running branches |
 | `REQUIRE <item>` | the item MUST be available before continuing | unavailable → `FALLBACK`, else execution ends |
 | `DELEGATE <work>` | an actor does the work | done when the actor delivers a result |
-| `VERIFY <result>` | evaluate a result | establishes `<result>.accepted` or `<result>.rejected` |
+| `VERIFY <result>` | evaluate a result | establishes `<result>.accepted` or `<result>.rejected`; undecidable → `FALLBACK`, else execution ends |
 | `TRANSITION "<state>"` | set the current process state | the latest `TRANSITION` wins |
+| `TRANSITION <name> "<status>"` | set the status of a bound entity | only a change its Definition declares, with its precondition; otherwise → `FALLBACK`, else execution ends |
 | `EMIT <artifact>` | produce an output | — |
 | `HITL:<name>[<a>, <b>, …]("<question>")` | ask a human to choose one answer | establishes `<name>.<answer>` |
 | `HITL("<request>")` | ask a human for input or an action | establishes no outcome |
 | `AUTO HITL:<name>[…]("…")` | the agent MAY answer, only if the decision is certain | uncertain → the human is asked |
-| `→ FALLBACK` | flow for an unusable response or an unavailable requirement | MUST end with `STOP` or `BREAK` |
+| `→ FALLBACK` | flow for a failed `HITL`, `REQUIRE`, `VERIFY` or entity `TRANSITION` | MUST end with `STOP` or `BREAK` |
 
 ### Who decides a `HITL`
 
@@ -47,7 +50,7 @@ Code blocks are labelled:
 | yes | yes | the agent; the human is not asked |
 | yes | no | the human |
 
-### Execution in ten rules
+### Execution rules
 
 1. Statements run one at a time, in the order written. Each statement finishes before the next starts. Only `FORK` runs things concurrently.
 2. A `WHEN` is checked once, when execution reaches it. True → run its flow, then continue after the `WHEN`. False → skip it.
@@ -59,6 +62,8 @@ Code blocks are labelled:
 8. A usable answer continues with the statement after the `HITL` construct. An unusable or missing answer runs the `FALLBACK`, or ends execution if there is none.
 9. The agent MUST NOT invent a response, a result, an outcome, or a requirement. A `HITL` is answered only by a response to that `HITL` given after it is reached, or by the agent under `AUTO`.
 10. When the last top-level statement is done, execution ends normally.
+11. Bindings are resolved first, top to bottom. If one is not satisfied, execution ends, as with `STOP`.
+12. An operation that fails (see **Failures**) runs its `FALLBACK`, or ends execution if it has none. A failed operation changes nothing and establishes no outcome; the agent MUST NOT substitute another result.
 
 ---
 
@@ -287,6 +292,16 @@ Evaluates a result against the applicable acceptance criteria.
 - The completion of delegated work is not a successful verification.
 - `VERIFY` MUST NOT silently modify the result it evaluates.
 - `VERIFY` does not branch. Execution continues with the next statement whatever the outcome; only a `WHEN` makes the flow depend on it.
+- If the applicable criteria do not determine exactly one outcome (criteria missing or contradictory, evidence unavailable), `VERIFY` fails: no outcome is established, and its `FALLBACK` runs, or execution ends if there is none. The agent MUST NOT choose an outcome.
+
+```form
+VERIFY <result>
+  → FALLBACK
+      → <statement>
+      → STOP
+```
+
+`VERIFY` on a bound entity is described in **Entities**.
 
 ---
 
@@ -298,7 +313,9 @@ TRANSITION "<state>"
 
 Sets the current process state. It performs no work: `TRANSITION "Code Review"` means the process is now in the `Code Review` state, not "perform a code review".
 
-The process has exactly one current state. Each `TRANSITION` replaces it; the most recently executed one wins.
+The process has exactly one current state. Each `TRANSITION` replaces it; the most recently executed one wins. Before the first `TRANSITION`, the process state is `none`.
+
+`TRANSITION <name> "<status>"` (with a bound name) changes the status of an entity, not the process state; see **Entities**.
 
 ---
 
@@ -436,7 +453,7 @@ HITL:<name>[...]("<question>")
       → STOP
 ```
 
-`FALLBACK` defines the flow to use when a `HITL` response is insufficient or unavailable, or when a `REQUIRE` cannot be satisfied. It is written as `→ FALLBACK`, indented directly under that `HITL` or `REQUIRE`. It attaches to nothing else.
+`FALLBACK` defines the flow to use when an operation fails: a `HITL` response is insufficient or unavailable, a `REQUIRE` cannot be satisfied, a `VERIFY` cannot determine an outcome, or an entity `TRANSITION` is not permitted. It is written as `→ FALLBACK`, indented directly under that `HITL`, `REQUIRE`, `VERIFY` or `TRANSITION <name>`. It attaches to nothing else (not to a process `TRANSITION "<state>"`).
 
 - It is not "a flow after the normal flow". It runs **instead of** the normal flow.
 - The fallback flow is one sequential flow, like a `WHEN` flow.
@@ -464,13 +481,149 @@ HITL("Approve the release notes")
 
 ---
 
+# Entities
+
+A process can operate on **entities**: identifiable things such as a task or an architectural decision record (ADR). What an entity is, and the contracts of each Entity Type (its **Template** for structure and its **Definition** for statuses, transitions and verification criteria), are defined in the Entity Model (`entity-model.md`). This section defines the DSL side only.
+
+Two different things are called "state" and "status":
+
+- the **process state** is set by `TRANSITION "<state>"` and belongs to the execution;
+- the **entity status** is set by `TRANSITION <name> "<status>"` and is stored in the entity.
+
+### Binding
+
+```form
+<name>:<Type> = <identity>
+<name>:<Type> = <bound-name>.<relation>
+```
+
+A binding gives an entity a name within the program. `<Type>` is an Entity Type (for example `Task`), and `<identity>` is the entity's identity (for example `TASK-0001`). The second form binds the single target of a relation of an entity bound on an earlier line.
+
+- Bindings are written at the top of the program, before every other statement, without indentation (rule V11).
+- A name is bound only once (V11). A bound name MUST NOT also be used as a `HITL` name (V12).
+- A binding is a reference, not a copy. The entity's data is read when an operation needs it, and read again after every `WAIT`, `HITL`, `DELEGATE` or `JOIN`, because it may have changed.
+
+| Situation | What happens |
+|---|---|
+| Exactly one entity has the identity, it is of type `<Type>`, and it is structurally valid (for a relation: the relation has exactly one target) | The name refers to that entity until execution ends. |
+| Anything else | Execution ends, as with `STOP`. No statement after the bindings runs. |
+
+### `VERIFY` on an entity
+
+`VERIFY <name>` with a bound name evaluates the entity against the verification criteria of its Definition.
+
+- The outcomes are the usual ones: `<name>.accepted` or `<name>.rejected`. A Definition states the criteria and the required evidence for each; it cannot add outcomes.
+- The step names the evidence the outcome rests on.
+- `VERIFY` does not modify the entity.
+- An entity that is no longer structurally valid is `rejected`.
+- If the criteria do not determine exactly one outcome, `VERIFY` fails (see **Failures**).
+
+### `TRANSITION` on an entity
+
+```form
+TRANSITION <name> "<status>"
+```
+
+Changes the status of the bound entity. It is performed only if all three hold:
+
+1. `<status>` is a status declared by the entity's Definition;
+2. the change from the current status to `<status>` is declared by the Definition;
+3. the precondition of that change holds (see **Preconditions**).
+
+Then the entity's authoritative representation (for example its file) records the new status; the step is done only when it has. Otherwise the transition fails: nothing is changed. The agent MUST NOT choose another status or insert intermediate transitions.
+
+An entity's status changes only through `TRANSITION <name> "<status>"`. `DELEGATE`d work may change an entity's other data only as its Definition permits.
+
+### Preconditions
+
+A Definition writes each precondition in one of these forms. If a change lists several, all MUST hold.
+
+| Precondition | Holds when |
+|---|---|
+| `none` | always |
+| `verified: accepted` | the most recent `VERIFY <name>` in this execution established `<name>.accepted` |
+| `verified: rejected` | the most recent `VERIFY <name>` in this execution established `<name>.rejected` |
+| `human: <answer>` | the `TRANSITION` is inside the flow of a `WHEN <h>.<answer>`, and `HITL:<h>` has no `AUTO` |
+| `field <field> is set` | the entity's field `<field>` has a value |
+
+A `human:` precondition can only be satisfied by a human's answer to a `HITL` without `AUTO`. The agent can never satisfy it.
+
+### Failures
+
+| Operation | Fails when | Then |
+|---|---|---|
+| binding | it is not satisfied | execution ends, as with `STOP` |
+| `REQUIRE` | the item cannot be obtained | its `FALLBACK` runs; if none, execution ends |
+| `HITL` | the response is insufficient or unavailable | its `FALLBACK` runs; if none, execution ends |
+| `VERIFY` | the criteria do not determine exactly one outcome | its `FALLBACK` runs; if none, execution ends |
+| `TRANSITION <name>` | the status or change is not declared, or the precondition does not hold | its `FALLBACK` runs; if none, execution ends |
+
+A failed operation changes nothing and establishes no outcome.
+
+Example (`TASK-0001` is in status `InProgress`):
+
+```text
+t1:Task = TASK-0001
+a1:ADR = t1.adr
+LOOP:work
+  DELEGATE implementation
+  VERIFY t1
+    → FALLBACK
+        → TRANSITION "Blocked"
+        → STOP
+  WHEN t1.accepted
+    → TRANSITION t1 "Review"
+    → BREAK
+  WHEN t1.rejected
+    → TRANSITION t1 "Debugging"
+    → DELEGATE diagnosis
+    → TRANSITION t1 "InProgress"
+HITL:done[approved, rejected]("Is TASK-0001 done?")
+WHEN done.approved
+  → TRANSITION t1 "Done"
+WHEN done.rejected
+  → TRANSITION t1 "InProgress"
+```
+
+The following are INVALID. A binding inside a scope (V11):
+
+```invalid
+LOOP:work
+  t1:Task = TASK-0001
+  VERIFY t1
+```
+
+A name bound twice (V11):
+
+```invalid
+t1:Task = TASK-0001
+t1:Task = TASK-0002
+```
+
+An entity `TRANSITION` on a name that is not bound (V12):
+
+```invalid
+TRANSITION t2 "Done"
+```
+
+A binding after another statement (V11):
+
+```invalid
+REQUIRE repository
+t1:Task = TASK-0001
+```
+
+A transition that the Definition does not permit (for example `TRANSITION t1 "Done"` while the task is `InProgress`) is not INVALID: the program is well-formed, and the transition fails when it is executed.
+
+---
+
 # Outcomes
 
 An outcome is a value `<subject>.<outcome>` that a `WHEN` can test.
 
 | Produced by | Subject | Possible outcomes |
 |---|---|---|
-| `VERIFY <result>` | `<result>` | `accepted`, `rejected` |
+| `VERIFY <result>` (also on a bound entity) | `<result>` | `accepted`, `rejected` |
 | `HITL:<name>[<a>, <b>, …]` (answered by the human, or by `AUTO`) | `<name>` | exactly the listed answers |
 
 No other statement produces outcomes.
@@ -490,7 +643,9 @@ Each statement is one line. Blank lines are ignored.
 
 | Form | Keywords |
 |---|---|
+| `<name>:<Type> = <identity>` or `<name>:<Type> = <name>.<relation>` | binding |
 | `<keyword> <argument>` | `REQUIRE`, `DELEGATE`, `VERIFY`, `EMIT` (identifier); `TRANSITION` (string) |
+| `TRANSITION <name> "<status>"` | `TRANSITION` on an entity |
 | `<keyword>` alone | `FORK`, `JOIN`, `BREAK`, `WAIT`, `STOP` |
 | `LOOP:<name>` | `LOOP` |
 | `WHEN <subject>.<outcome>` | `WHEN` |
@@ -506,9 +661,9 @@ Each statement is one line. Blank lines are ignored.
    - `LOOP` (its body)
    - `WHEN` (its `→` items)
    - `FORK` (its `→` branches)
-   - `HITL` and `REQUIRE` (only a `→ FALLBACK`)
+   - `HITL`, `REQUIRE`, `VERIFY` and `TRANSITION <name>` (only a `→ FALLBACK`)
    - `→ FALLBACK` (its `→` items)
-   - any `→` item (lines that continue that item's flow or branch). If the statement after `→` is itself a `LOOP`, `WHEN`, `FORK`, `HITL` or `REQUIRE`, the lines nested under it are that statement's own children.
+   - any `→` item (lines that continue that item's flow or branch). If the statement after `→` is itself a `LOOP`, `WHEN`, `FORK`, `HITL`, `REQUIRE`, `VERIFY` or `TRANSITION <name>`, the lines nested under it are that statement's own children.
 5. By convention, the lines nested under a `→` item are aligned with the text after `→ `.
 6. Any other indentation is INVALID (V1).
 
@@ -521,7 +676,7 @@ Any statement may appear inside a loop body, a `WHEN` flow, a fallback flow, or 
 | `WHEN` | the next step of one sequential flow |
 | `FALLBACK` | the next step of one sequential flow |
 | `FORK` | a separate concurrent branch |
-| `HITL`, `REQUIRE` | only `→ FALLBACK` |
+| `HITL`, `REQUIRE`, `VERIFY`, `TRANSITION <name>` | only `→ FALLBACK` |
 
 Example of nesting:
 
@@ -538,7 +693,7 @@ The flow is `DELEGATE correction`, then `VERIFY correction`, then `TRANSITION "R
 
 ## Names and strings
 
-- An identifier consists of letters, digits, `-` and `_`, and starts with a letter.
+- An identifier consists of letters, digits, `-` and `_`, and starts with a letter. Names, Entity Types, identities and relations are identifiers.
 - A `.` separates subject and outcome in a condition; it is not part of an identifier.
 - Strings are enclosed in `"…"`.
 
@@ -551,22 +706,25 @@ A program that breaks any of these rules is INVALID. It MUST be rejected as a wh
 | V1 | the indentation violates **Indentation and scope** |
 | V2 | `BREAK` is not inside a `LOOP` |
 | V3 | `BREAK` is inside a `FORK` branch, and the `LOOP` it would leave is outside that branch |
-| V4 | a `→` item is under anything other than `WHEN`, `FORK` or `FALLBACK`; or `→ FALLBACK` is not directly under a `HITL` or `REQUIRE`; or a `HITL`/`REQUIRE` has more than one `FALLBACK` |
+| V4 | a `→` item is under anything other than `WHEN`, `FORK` or `FALLBACK`; or `→ FALLBACK` is not directly under a `HITL`, `REQUIRE`, `VERIFY` or `TRANSITION <name>`; or one of them has more than one `FALLBACK` |
 | V5 | `AUTO` is not immediately followed, on the same line, by a decision `HITL:<name>[…]` |
 | V6 | a `WHEN` tests `x.y`, and the program contains neither `VERIFY x` with `y` being `accepted` or `rejected`, nor `HITL:x[…]` listing `y` |
 | V7 | two `HITL` statements use the same name, a name is used by both a `HITL` and a `VERIFY`, or an answer list is empty or repeats an answer |
 | V8 | the last item of a fallback flow is not `STOP` or `BREAK` |
 | V9 | a `JOIN` has no corresponding `FORK`, or a `FORK` has fewer than two branches |
 | V10 | a `WHEN` tests a subject that a branch of a `FORK` in the same flow establishes, and that `FORK` has not been joined before the `WHEN` |
+| V11 | a binding is indented, or follows a statement that is not a binding, or binds a name that is already bound, or its relation starts from a name not bound on an earlier line |
+| V12 | `TRANSITION <name> "<status>"` uses a name that is not bound, or a bound name is used as a `HITL` name |
 
 ## Grammar (EBNF)
 
 `INDENT` and `DEDENT` mean one level deeper and back, as defined in **Indentation and scope**.
 
 ```ebnf
-program   = block ;
+program   = { binding } , block ;
+binding   = identifier , ":" , identifier , "=" , identifier , [ "." , identifier ] , NL ;
 block     = statement , { statement } ;
-statement = loop | when | fork | hitl | require | simple ;
+statement = loop | when | fork | hitl | require | verify | etrans | simple ;
 
 loop      = "LOOP:" , identifier , NL , INDENT , block , DEDENT ;
 when      = "WHEN" , identifier , "." , identifier , NL , INDENT , flow , DEDENT ;
@@ -574,12 +732,14 @@ fork      = "FORK" , NL , INDENT , item , item , { item } , DEDENT ;
 hitl      = ( [ "AUTO" ] , "HITL:" , identifier , "[" , identifier , { "," , identifier } , "]"
             | "HITL" ) , "(" , string , ")" , NL , [ fallback ] ;
 require   = "REQUIRE" , identifier , NL , [ fallback ] ;
+verify    = "VERIFY" , identifier , NL , [ fallback ] ;
+etrans    = "TRANSITION" , identifier , string , NL , [ fallback ] ;
 fallback  = INDENT , "→" , "FALLBACK" , NL , INDENT , flow , DEDENT , DEDENT ;
 
 flow      = item , { item } ;
 item      = "→" , statement , [ INDENT , block , DEDENT ] ;
 
-simple    = ( "DELEGATE" | "VERIFY" | "EMIT" ) , identifier , NL
+simple    = ( "DELEGATE" | "EMIT" ) , identifier , NL
           | "TRANSITION" , string , NL
           | ( "JOIN" | "BREAK" | "WAIT" | "STOP" ) , NL ;
 identifier = letter , { letter | digit | "-" | "_" } ;
@@ -592,13 +752,14 @@ string     = '"' , { character - '"' } , '"' ;
 
 An agent that executes a program MUST follow this procedure:
 
-1. **Validate first.** Check rules V1–V10. If any is broken, do not execute. Report each broken rule by its number.
+1. **Validate first.** Check rules V1–V12. If any is broken, do not execute. Report each broken rule by its number.
 2. **Execute exactly what is written.** Run one statement at a time, following the rules of its section. Never skip, reorder, merge, or add statements.
 3. **Keep the execution state:**
    - the current position
    - the current process state (from `TRANSITION`)
    - the latest outcome of each subject
    - the running branches
+   - the bound entities (by identity)
 4. **Never invent.** Results come from actors, outcomes from `VERIFY` or `HITL`, answers from humans (or from the agent only under `AUTO`), and events from the runtime.
 5. **Stop at a boundary.** If an event, response, or result is not yet available, the execution waits there. Do not assume what it will be.
 
@@ -618,11 +779,16 @@ The effect is one of the following:
 - `branches started`
 - `joined`
 - `waiting`
-- `fallback`
+- `bound <identity>`
+- `status <name> = "<status>"`
+- `failed: <reason>; fallback`
+- `failed: <reason>; stop`
 - `loop again`
 - `break`
 - `stop`
 - `end`
+
+A failed operation (see **Failures**) is traced as `failed: <reason>; fallback` when its `FALLBACK` runs, and as `failed: <reason>; stop` when execution ends because it has none. For a `VERIFY` on an entity, the `outcome` effect also names the evidence, for example `outcome t1.accepted (evidence: all tests pass)`.
 
 ## Complete example
 
@@ -698,6 +864,7 @@ In particular:
 - `VERIFY` defines evaluation, not the verification implementation.
 - `TRANSITION` defines a state change, not state-storage mechanics.
 - `EMIT` defines an output, not its storage or transport mechanism.
+- A binding refers to an entity by identity, not to a file or a storage location.
 - `WAIT` defines suspension, not the event mechanism.
 - `HITL` defines a human interaction boundary, not the UI or communication mechanism.
 - `AUTO` defines when automatic decision resolution is permitted, not an algorithm or confidence threshold.

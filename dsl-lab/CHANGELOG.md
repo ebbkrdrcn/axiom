@@ -55,3 +55,19 @@ Protocol: 35 scenarios × (3 Sonnet + 3 Haiku 4.5) blind probes and 2 CONF probe
   - S10 (Haiku): model error.
 - **New findings:** F-36…F-49.
 - The spec is unchanged in this test; v3 edits await owner approval.
+
+## Entity model integration (2026-09-25, owner-approved)
+- **Decisions:**
+  - VERIFY outcomes stay `accepted`/`rejected`; Definitions give criteria and evidence only.
+  - Every failure runs its FALLBACK or ends execution as with STOP; bindings have no FALLBACK.
+  - Terms: process *state* vs entity *status*/*data*.
+  - Human approval is a precondition `human: <answer>` that only a non-AUTO HITL can satisfy.
+- **`dsl.md`:**
+  - New **Entities** section: binding, `VERIFY <name>`, `TRANSITION <name> "<status>"`, the precondition forms and a Failures table.
+  - FALLBACK is allowed under VERIFY and entity TRANSITION.
+  - A VERIFY that cannot determine one outcome now fails; this applies to every VERIFY.
+  - The process state is `none` before the first TRANSITION.
+  - New rules V11 and V12, updated EBNF, execution rules 11–12, and new trace effects (`bound`, `status`, `failed: …; fallback|stop`).
+- **`entity-model.md`:** aligned with the decisions (State → Data, closed outcomes, failure behaviour, precondition forms, V11/V12 references).
+- **`docs/types/`:** Task and ADR contracts (`template.md`, `definition.md`, `representation.md`).
+- **`tools/dslcheck.py`:** parses bindings and entity TRANSITION, allows FALLBACK under VERIFY and entity TRANSITION, and checks V11/V12. All `dsl.md` examples pass, and lint results on the Test 2 outputs are unchanged.

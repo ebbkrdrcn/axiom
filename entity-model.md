@@ -17,7 +17,7 @@ The Entity Model serves the same purpose. It tells the interpreter:
 
 The goal is **behavioral determinism**.
 
-Two interpreters executing the same process against the same entities may produce different text. They must reach the same states, outcomes, and decisions.
+Two interpreters executing the same process against the same entities may produce different text. They must reach the same statuses, outcomes, and decisions.
 
 Consequently, every rule in this document is written to be followed by reading, not enforced by a program.
 
@@ -45,13 +45,13 @@ The structural contract of an Entity Type.
 
 The semantic and behavioral contract of an Entity Type.
 
-**State**
+**Data**
 
-The current condition of a specific entity.
+The current condition of a specific entity: its field and section values, including its status.
 
 **Representation**
 
-The form in which an entity's state is expressed in some medium.
+The form in which an entity's data is expressed in some medium.
 
 ```text
 Entity Type
@@ -65,7 +65,7 @@ Entity Type
                 │
                 ├── Identity
                 │
-                └── State
+                └── Data
                        │
                        ▼
                 Representation
@@ -77,10 +77,10 @@ None of these concepts may be used in place of another:
 
 > Entity ≠ Template  
 > Entity ≠ Definition  
-> Entity ≠ State  
+> Entity ≠ Data  
 > Entity ≠ Representation  
 > Template ≠ Definition  
-> State ≠ Representation
+> Data ≠ Representation
 
 ---
 
@@ -193,11 +193,11 @@ The closed list of lifecycle statuses, the initial status, and the terminal stat
 
 **Transitions**
 
-The closed list of permitted status changes, and the precondition of each.
+The closed list of permitted status changes, and the precondition of each. Preconditions are written in the forms defined by the DSL (`dsl.md`, **Entities › Preconditions**): `none`, `verified: accepted`, `verified: rejected`, `human: <answer>`, `field <field> is set`.
 
 **Verification**
 
-The closed list of verification outcomes, the criteria for each outcome, and the evidence each outcome requires.
+The criteria and the required evidence for the two verification outcomes, `accepted` and `rejected`. A Definition cannot declare other outcomes.
 
 **Relations**
 
@@ -211,7 +211,7 @@ Conditions that must hold in every state of the entity.
 
 A Definition contains two kinds of rules.
 
-**Explicit rules** can be decided by reading state alone.
+**Explicit rules** can be decided by reading data alone.
 
 Examples: the list of statuses, the transition table, which outcome a transition requires.
 
@@ -247,7 +247,7 @@ An instance has:
 
 - an identity,
 - an Entity Type,
-- a State.
+- Data.
 
 Through its type, an instance is governed by a Template and a Definition.
 
@@ -263,27 +263,29 @@ The Template and Definition that govern it.
 
 **Instance level**
 
-Its identity and its current State.
+Its identity and its current Data.
 
 ---
 
-# State
+# Data
 
-**State** is the current condition of a specific entity: the current values of its fields and sections.
+**Data** is the current condition of a specific entity: the current values of its fields and sections.
 
-State belongs to the instance. Template and Definition belong to the type.
+Data belongs to the instance. Template and Definition belong to the type.
 
-**Status** is the part of State governed by the Definition's transitions.
+**Status** is the part of Data governed by the Definition's transitions.
 
-State may change while Template and Definition stay the same.
+Data may change while Template and Definition stay the same.
 
-A change of State does not change the entity's identity or type.
+A change of Data does not change the entity's identity or type.
+
+The word **state** is reserved for the process state of the DSL (`TRANSITION "<state>"`). An entity has data and a status, not a state.
 
 ---
 
 # Representation
 
-A **Representation** is the form in which an entity's state is expressed in some medium.
+A **Representation** is the form in which an entity's data is expressed in some medium.
 
 The same entity may be represented:
 
@@ -302,16 +304,18 @@ Templates and Definitions may themselves have representations, such as files. Th
 
 ## Synchronization
 
-The relationship between State and representation is defined as follows:
+The relationship between Data and representation is defined as follows:
 
-- The authoritative representation expresses the entity's State. Reading the State means reading the authoritative representation.
-- A state change performed by a process is complete only when the authoritative representation has been updated.
-- A change to the authoritative representation is a state change, whoever makes it. A human editing the file changes the entity.
-- A change to a derived representation, including the interpreter's own context, is not a state change.
+- The authoritative representation expresses the entity's Data. Reading the Data means reading the authoritative representation.
+- A data change performed by a process is complete only when the authoritative representation has been updated.
+- A change to the authoritative representation is a data change, whoever makes it. A human editing the file changes the entity.
+- A change to a derived representation, including the interpreter's own context, is not a data change.
 
 ---
 
 # Entities in the DSL
+
+The DSL forms below (binding, `VERIFY <name>`, `TRANSITION <name> "<status>"`), their validity rules (V11, V12) and their failure behaviour are defined normatively in `dsl.md`, section **Entities**. This section explains them in terms of the Entity Model.
 
 ## Binding
 
@@ -333,7 +337,7 @@ This means:
 
 A binding is a **reference**, not a copy.
 
-It does not load or freeze state. State is read from the authoritative representation when it is needed.
+It does not load or freeze data. Data is read from the authoritative representation when it is needed.
 
 A binding may also follow a single-valued relation of an already bound entity:
 
@@ -357,13 +361,14 @@ A binding is satisfied only when:
 
 For a relation binding, the relation must also have exactly one target.
 
-If a binding cannot be satisfied, execution must not proceed as if it were satisfied. This is the same rule that applies to `REQUIRE`.
+If a binding cannot be satisfied, execution ends, as with `STOP`. No statement after the bindings runs.
 
 ### Binding Rules
 
 - A binding is immutable. The name refers to the same identity until the process ends.
 - A name may be bound only once in a process.
-- Bindings appear at the top level of a process, before the flows that use them. A binding inside `LOOP`, `WHEN`, or `FORK` is invalid.
+- Bindings appear at the top of a process, unindented, before every other statement. A binding anywhere else is invalid (V11).
+- A bound name must not be used as a `HITL` name (V12).
 - A bound name is visible in every scope that follows it.
 
 ---
@@ -401,13 +406,13 @@ Evaluates the entity against the verification criteria of its Definition.
 
 `VERIFY`:
 
-- establishes exactly one of the outcomes declared by the Definition;
+- establishes exactly one outcome, `accepted` or `rejected`;
 - names the evidence on which the outcome rests;
 - does not modify the entity.
 
-A structurally invalid entity cannot receive an outcome that the Definition treats as acceptance.
+A structurally invalid entity is `rejected`.
 
-If the criteria do not determine a single outcome, no outcome is established. The interpreter must not choose one. Human input is required.
+If the criteria do not determine a single outcome, no outcome is established and the interpreter must not choose one. The `VERIFY` fails: its `FALLBACK` runs, or execution ends if it has none.
 
 ### TRANSITION
 
@@ -433,7 +438,9 @@ An entity transition is valid only when:
 
 An invalid transition is not performed.
 
-Execution must not proceed as if it were performed, and the interpreter must not substitute a different status or insert intermediate transitions. Human input is required.
+Execution must not proceed as if it were performed, and the interpreter must not substitute a different status or insert intermediate transitions. The `TRANSITION` fails: its `FALLBACK` runs, or execution ends if it has none.
+
+A precondition `human: <answer>` holds only when the `TRANSITION` is inside the flow of `WHEN <h>.<answer>` for a `HITL:<h>` without `AUTO`. A human decision is therefore always obtained through a `HITL` in the process.
 
 A valid transition is complete only when the authoritative representation records the new status.
 
@@ -449,7 +456,7 @@ is satisfied when the most recent `VERIFY <name>` in the current execution estab
 
 Before any `VERIFY <name>` has been executed, no outcome condition on `<name>` is satisfied.
 
-`<outcome>` must be declared by the Definition.
+`<outcome>` is `accepted` or `rejected`.
 
 ### DELEGATE
 
@@ -503,7 +510,7 @@ Do not extend a closed vocabulary.
 
 **5. Persist changes.**
 
-Record a state change in the authoritative representation as part of the operation that makes it.
+Record a data change in the authoritative representation as part of the operation that makes it.
 
 Change only what the operation concerns.
 
@@ -515,15 +522,15 @@ Unrelated content is not reformatted or rewritten.
 
 **7. Refresh after external activity.**
 
-After `WAIT`, `HITL`, `DELEGATE`, or `JOIN`, the state may have changed.
+After `WAIT`, `HITL`, `DELEGATE`, or `JOIN`, the data may have changed.
 
 Re-read the authoritative representation before depending on it.
 
-**8. Escalate what the contracts do not decide.**
+**8. Fail what the contracts do not decide.**
 
 When a contract does not determine an answer, do not guess.
 
-Human input is required, and the request names the missing or conflicting rule.
+The operation fails: its `FALLBACK` runs, or execution ends if it has none. The report names the missing or conflicting rule. When a process needs a human decision, it asks for it with a `HITL`.
 
 ---
 
@@ -638,11 +645,11 @@ A unit of work with an explicitly verifiable result.
 | From       | To         | Precondition                                 |
 |------------|------------|----------------------------------------------|
 | Todo       | InProgress | none                                         |
-| InProgress | Review     | most recent VERIFY established `accepted`    |
-| InProgress | Debugging  | most recent VERIFY established `rejected`    |
+| InProgress | Review     | verified: accepted                           |
+| InProgress | Debugging  | verified: rejected                           |
 | Debugging  | InProgress | none                                         |
 | Review     | InProgress | none                                         |
-| Review     | Done       | human approval                               |
+| Review     | Done       | human: approved                              |
 
 ## Verification
 
@@ -698,33 +705,33 @@ Assume `TASK-0001` is in status `InProgress` and links `ADR-0003`.
 
 # Invalid Usage
 
-Type mismatch. The binding is not satisfied:
+Type mismatch. The program is well-formed, but the binding is not satisfied, so execution ends before any other statement:
 
 ```text
 t1:Task = ADR-0003
 ```
 
-Undeclared transition. From `InProgress`, the Task Definition does not declare `Done`:
+Undeclared transition. The program is well-formed, but from `InProgress` the Task Definition does not declare `Done`, so the `TRANSITION` fails when executed:
 
 ```text
 TRANSITION t1 "Done"
 ```
 
-Undeclared outcome. The Task Definition declares only `accepted` and `rejected`:
+Undeclared outcome. `VERIFY` establishes only `accepted` or `rejected` (V6):
 
 ```text
 WHEN t1.approved
   → BREAK
 ```
 
-Rebinding a name:
+Rebinding a name (V11):
 
 ```text
 t1:Task = TASK-0001
 t1:Task = TASK-0002
 ```
 
-Binding inside a scoped construct:
+Binding inside a scoped construct (V11):
 
 ```text
 LOOP:work
@@ -735,15 +742,15 @@ LOOP:work
 
 # Semantic Principles
 
-The Entity Model separates the entity, its contracts, its state, and its representation.
+The Entity Model separates the entity, its contracts, its data, and its representation.
 
 In particular:
 
 - A binding refers to an entity by identity, not to a file.
 - The Template defines structure, not meaning.
 - The Definition defines meaning and permitted behavior, not implementation.
-- State belongs to the instance; contracts belong to the type.
-- The authoritative representation expresses the State; every other representation is derived.
+- Data belongs to the instance; contracts belong to the type.
+- The authoritative representation expresses the Data; every other representation is derived.
 - The DSL defines the generic meaning of an operation; the Definition defines what it means for a specific Entity Type.
 
 A process that refers to `t1` does not change if the representation of Task moves from Markdown to another medium. Only the representation mapping changes.
@@ -758,5 +765,5 @@ The following are not yet defined:
 - **Status conditions.** How a `WHEN` condition tests an entity's current status. This depends on the DSL condition grammar.
 - **Concurrent changes.** What happens when concurrent `FORK` branches change the same entity.
 - **Multi-valued relations.** How a relation with cardinality greater than one is bound or referenced.
-- **Outcome persistence.** Whether a verification outcome is part of the entity's State, recorded in its representation, or exists only within an execution.
+- **Outcome persistence.** Whether a verification outcome is part of the entity's Data, recorded in its representation, or exists only within an execution.
 - **Contract changes.** How existing instances are treated when their Template or Definition changes.

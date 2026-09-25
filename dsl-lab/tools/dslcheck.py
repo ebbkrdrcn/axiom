@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""dslcheck: parser and validity checker (rules V1-V10) for go_harness DSL v2.
+"""dslcheck: parser and validity checker (rules V1-V12) for go_harness DSL.
 
 usage: dslcheck.py FILE...      (each file = one program)
        dslcheck.py --md FILE    (check every ```text block in a markdown file)
@@ -10,7 +10,8 @@ import sys
 
 ARROW = "→"
 IDENT = r"[A-Za-z][A-Za-z0-9_-]*"
-COMPOUND = {"LOOP", "WHEN", "FORK", "HITL", "REQUIRE"}
+COMPOUND = {"LOOP", "WHEN", "FORK", "HITL", "REQUIRE", "VERIFY", "ETRANS"}
+FALLBACK_HOSTS = ("HITL", "REQUIRE", "VERIFY", "ETRANS")
 
 
 class Node:
@@ -37,6 +38,12 @@ def parse_stmt(text):
     m = re.fullmatch(rf"(REQUIRE|DELEGATE|VERIFY|EMIT) ({IDENT})", t)
     if m:
         return m[1], {"arg": m[2]}
+    m = re.fullmatch(rf"({IDENT}):({IDENT}) = ({IDENT})(?:\.({IDENT}))?", t)
+    if m:
+        return "BIND", {"name": m[1], "type": m[2], "target": m[3], "relation": m[4]}
+    m = re.fullmatch(rf'TRANSITION ({IDENT}) "([^"]+)"', t)
+    if m:
+        return "ETRANS", {"name": m[1], "arg": m[2]}
     m = re.fullmatch(r'TRANSITION "([^"]+)"', t)
     if m:
         return "TRANSITION", {"arg": m[1]}
@@ -121,14 +128,14 @@ def check_structure(n, errors):
             errors.append(f"{loc}: V1: FORK must contain only '→' branches")
         if len(items) < 2:
             errors.append(f"{loc}: V9: FORK has fewer than two branches")
-    elif k in ("HITL", "REQUIRE"):
+    elif k in FALLBACK_HOSTS:
         if plain or items:
             errors.append(f"{loc}: V1/V4: {k} may only contain '→ FALLBACK'")
         if len(fallbacks) > 1:
             errors.append(f"{loc}: V4: {k} has more than one FALLBACK")
     elif k == "FALLBACK":
-        if n.parent.kind not in ("HITL", "REQUIRE") or n.parent.arrow and False:
-            errors.append(f"{loc}: V4: '→ FALLBACK' not directly under HITL or REQUIRE")
+        if n.parent.kind not in FALLBACK_HOSTS:
+            errors.append(f"{loc}: V4: '→ FALLBACK' not directly under HITL, REQUIRE, VERIFY or TRANSITION <name>")
         if not items or plain or fallbacks:
             errors.append(f"{loc}: V1: FALLBACK must contain only '→' items (at least one)")
         else:
@@ -170,6 +177,25 @@ def check_semantics(root, errors):
             errors.append(f"line {h.line_no}: V7: answer list empty or repeated")
         if h.name in verify:
             errors.append(f"line {h.line_no}: V7: name '{h.name}' used by both HITL and VERIFY")
+    # V11 / V12: bindings
+    bound, seen_other = {}, False
+    for n in nodes:
+        if n.kind == "BIND":
+            if n.parent.kind != "PROGRAM" or n.arrow or seen_other:
+                errors.append(f"line {n.line_no}: V11: binding must be at the top of the program, unindented, before other statements")
+            if n.name in bound:
+                errors.append(f"line {n.line_no}: V11: name '{n.name}' is already bound")
+            if n.relation and n.target not in bound:
+                errors.append(f"line {n.line_no}: V11: relation starts from '{n.target}', which is not bound on an earlier line")
+            bound[n.name] = n
+        else:
+            seen_other = True
+    for n in nodes:
+        if n.kind == "ETRANS" and n.name not in bound:
+            errors.append(f"line {n.line_no}: V12: TRANSITION on '{n.name}', which is not bound")
+    for h in hitls:
+        if h.name in bound:
+            errors.append(f"line {h.line_no}: V12: bound name '{h.name}' used as a HITL name")
     for n in nodes:
         if n.kind == "BREAK":
             loop = next((a for a in ancestors(n) if a.kind == "LOOP"), None)
