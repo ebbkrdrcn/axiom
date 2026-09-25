@@ -23,10 +23,12 @@ Injected events:
 Produce the step-by-step execution and state the final process state.
 
 ## Expected
-### Determined by spec (partly by inference)
+### Determined by spec
 - D1 Both branches execute concurrently; within each branch DELEGATE precedes VERIFY. (FORK)
 - D2 A rejected VERIFY is an outcome, not an aborted flow; the integration branch completes. JOIN waits for both branches, then execution continues. (VERIFY, JOIN)
-- D3 After JOIN, WHEN constructs are evaluated in declaration order; `unit-tests.accepted` holds → TRANSITION "Ready"; then `integration-tests.rejected` holds → TRANSITION "Debugging". (WHEN, Flow — inference, F-06)
+
+### Most likely reading (by inference only — F-06)
+- D3 After JOIN, WHEN constructs are evaluated in declaration order; `unit-tests.accepted` holds → TRANSITION "Ready"; then `integration-tests.rejected` holds → TRANSITION "Debugging". (WHEN is a statement; Flow: declaration order; nothing states exclusivity)
 - D4 Final state: "Debugging".
 
 ### Underdetermined (→ findings)
@@ -34,4 +36,4 @@ Produce the step-by-step execution and state the final process state.
 - U2 Meaning of "required forked flows" and whether a rejected branch counts as completed (F-12).
 
 ### Pass rule
-D1–D4 in all probes.
+D1–D2 in all probes, and all probes agree on D3/D4 (disagreement = ambiguity F-06).
