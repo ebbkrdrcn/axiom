@@ -39,7 +39,7 @@ Code blocks are labelled:
 | `EMIT <artifact>` | produce an output | — |
 | `HITL:<name>[<a>, <b>, …]("<question>")` | ask a human to choose one answer | establishes `<name>.<answer>` |
 | `HITL("<request>")` | ask a human for input or an action | establishes no outcome |
-| `AUTO HITL:<name>[…]("…")` | the agent MAY answer, only if the decision is certain | uncertain → the human is asked |
+| `AUTO HITL:<name>[…]("…")` | the agent MAY answer, only if the decision is certain and within its authority | otherwise → the human is asked |
 | `→ FALLBACK` | flow for a failed `HITL`, `REQUIRE`, `VERIFY` or entity `TRANSITION` | MUST end with `STOP` or `BREAK` |
 
 ### Who decides a `HITL`
@@ -53,16 +53,16 @@ Code blocks are labelled:
 ### Execution rules
 
 1. Statements run one at a time, in the order written. Each statement finishes before the next starts. Only `FORK` runs things concurrently.
-2. A `WHEN` is checked once, when execution reaches it. True → run its flow, then continue after the `WHEN`. False → skip it.
+2. A `WHEN` is checked once, when execution reaches it. True → run its flow. False → skip its flow. Either way, execution then continues with the **next statement in the same block**; if the `WHEN` is the last statement of a loop body, that is the first statement of the loop body (rule 5).
 3. Consecutive `WHEN`s are independent. Every one that is true runs, top to bottom.
 4. The `→` items under a `WHEN` or a `FALLBACK` form **one sequential flow**. The `→` items under a `FORK` are **separate concurrent branches**.
 5. At the end of a loop body, the body starts again from its first statement.
 6. `BREAK` leaves the innermost loop immediately. `STOP` ends everything immediately.
-7. An outcome (`x.accepted`, `merge.approved`, …) keeps its latest value. A new `VERIFY x` or a new answer to `HITL:x` replaces it. Before anything establishes it, every `WHEN` on it is false.
+7. An outcome (`x.accepted`, `merge.approved`, …) keeps its latest value. A new `VERIFY x` or a new answer to `HITL:x` replaces it. `WHEN x.y` is true only if the latest outcome of `x` is exactly `y`; if `x` holds another outcome, or none yet, it is false.
 8. A usable answer continues with the statement after the `HITL` construct. An unusable or missing answer runs the `FALLBACK`, or ends execution if there is none.
 9. The agent MUST NOT invent a response, a result, an outcome, or a requirement. A `HITL` is answered only by a response to that `HITL` given after it is reached, or by the agent under `AUTO`.
 10. When the last top-level statement is done, execution ends normally.
-11. Bindings are resolved first, top to bottom. If one is not satisfied, execution ends, as with `STOP`.
+11. Bindings are resolved once, first, top to bottom. If one is not satisfied, execution ends, as with `STOP`. This is an execution failure, not a validity error.
 12. An operation that fails (see **Failures**) runs its `FALLBACK`, or ends execution if it has none. A failed operation changes nothing and establishes no outcome; the agent MUST NOT substitute another result.
 
 ---
@@ -114,8 +114,9 @@ Runs its flow if the condition is true. `WHEN` itself performs no work and chang
 
 | Situation | What happens |
 |---|---|
-| Execution reaches the `WHEN` and the condition is true | Run the flow: its `→` items and their nested lines, top to bottom, sequentially. Then continue after the `WHEN`, unless the flow ran `BREAK` or `STOP`. |
-| The condition is false | Skip the flow and continue after the `WHEN`. This is not an error. Execution does not wait. |
+| Execution reaches the `WHEN` and the condition is true | Run the flow: its `→` items and their nested lines, top to bottom, sequentially. Then continue with the next statement in the same block, unless the flow ran `BREAK` or `STOP`. |
+| The condition is false | Skip the flow and continue with the next statement in the same block. This is not an error. Execution does not wait. |
+| The `WHEN` is the last statement of a loop body | "The next statement" is the first statement of the loop body: the loop starts again (rule 5). It is never the line after the loop. |
 | The outcome is established later | Nothing happens. A `WHEN` is not a standing trigger and is never re-checked. |
 | Several `WHEN`s in a row | Each one is checked independently, top to bottom. Every true one runs; there is no "else" and no "first match". |
 
@@ -155,7 +156,21 @@ Starts two or more concurrent branches. Each `→` starts one branch. A branch i
 | A branch's last statement is done | That branch is complete. |
 | No `JOIN` follows | Execution continues immediately after the `FORK` while the branches run. |
 | `STOP` in any branch | The whole execution ends, including all other branches. |
-| `BREAK` in a branch | INVALID (rule V3). To leave a loop based on a branch's result, `JOIN` first, then use `WHEN … → BREAK`. |
+| `BREAK` in a branch that would leave a `LOOP` outside the branch | INVALID (rule V3). To leave that loop based on a branch's result, `JOIN` first, then use `WHEN … → BREAK`. |
+| `BREAK` in a branch that leaves a `LOOP` nested inside the same branch | Valid. It leaves only that inner loop; the branch continues. |
+
+Example of a valid `BREAK` inside a branch (the loop is inside the branch):
+
+```text
+FORK
+  → LOOP:retry
+      DELEGATE upload
+      VERIFY upload
+      WHEN upload.accepted
+        → BREAK
+  → DELEGATE docs
+JOIN
+```
 
 ---
 
@@ -301,6 +316,8 @@ VERIFY <result>
       → STOP
 ```
 
+`VERIFY x` evaluates the result named `x`. It does not require a `DELEGATE x`; a `DELEGATE` and a `VERIFY` refer to the same thing only when they use the same name.
+
 `VERIFY` on a bound entity is described in **Entities**.
 
 ---
@@ -353,9 +370,22 @@ HITL("<request>")
 
 | Response | Classification |
 |---|---|
-| Clearly selects exactly one listed answer (in any wording) | usable |
-| Selects none of the listed answers, is ambiguous between answers, or is off-topic (for example "I haven't looked yet") | insufficient |
-| No response, and the runtime has stopped waiting | unavailable |
+| Clearly means exactly one listed answer, in any wording, even if it also adds comments, reasons or requests | usable: that answer |
+| Selects none of the listed answers, defers the decision, is ambiguous between answers, or is off-topic | insufficient |
+| No response, and the runtime has stopped waiting (the runtime decides when; the agent never decides it) | unavailable |
+
+Examples for `[approved, rejected]`:
+
+| Response | Classification |
+|---|---|
+| "Yes, go ahead." | usable: `approved` |
+| "Approved, but fix the typo later." | usable: `approved` |
+| "Not like this, rewrite the intro." | usable: `rejected` (it clearly refuses; the request is extra) |
+| "No." | usable: `rejected` |
+| "I haven't looked yet." / "Let me think about it next week." | insufficient (no decision) |
+| "Maybe." / "Approve and reject both." | insufficient (ambiguous) |
+
+Only the chosen answer counts. Anything else in a response (comments, requests, instructions such as "and deploy it too") adds no statement, answers no other `HITL`, and changes nothing else in the execution.
 
 For `HITL("<request>")`, a response is usable if it provides the requested input or confirms the requested action.
 
@@ -398,7 +428,7 @@ AUTO HITL:<name>[<answer>, ...]("<question>")
 
 `AUTO` is written directly before `HITL`, on the same line. It applies only to that one `HITL`, which MUST be a decision (with a name and an answer list). `AUTO` is not a statement on its own and applies to nothing else (rule V5).
 
-`AUTO` means: resolve the decision automatically when it is sufficiently determined; otherwise ask the human.
+`AUTO` means: the agent answers the decision itself **only when it is certain and within the agent's authority**; otherwise the human is asked.
 
 `AUTO` is not a request to guess. Automatic resolution is permitted only when the agent can determine one single answer from the list, based on the available information and the applicable criteria. Uncertainty exists when the agent cannot reliably determine that answer. Examples:
 
@@ -423,13 +453,19 @@ AUTO
     → HITL("Approve?")
 ```
 
+Breaks V1 (`AUTO` has children), V5 (`AUTO` not followed by a decision `HITL`), V6 (nothing establishes `decision.uncertain`).
+
 ```invalid
 AUTO DELEGATE implementation
 ```
 
+Breaks V5.
+
 ```invalid
 AUTO HITL("Please review the notes")
 ```
+
+Breaks V5 (a request `HITL` cannot take `AUTO`).
 
 Example, where the agent answers only the first decision:
 
@@ -502,6 +538,9 @@ A binding gives an entity a name within the program. `<Type>` is an Entity Type 
 - Bindings are written at the top of the program, before every other statement, without indentation (rule V11).
 - A name is bound only once (V11). A bound name MUST NOT also be used as a `HITL` name (V12).
 - A binding is a reference, not a copy. The entity's data is read when an operation needs it, and read again after every `WAIT`, `HITL`, `DELEGATE` or `JOIN`, because it may have changed.
+- **Identity comes only from the `id` that a representation declares**, never from a file name or path. If no representation, or more than one, declares the identity, the binding is not satisfied. The agent MUST NOT pick one of several.
+- Bindings are resolved once, before any other statement. They are not checked again; later changes are seen by reading the entity again.
+- An unsatisfied binding is an **execution failure, not a validity error**: the program is still VALID. V11 and V12 concern only where and how bindings are written.
 
 | Situation | What happens |
 |---|---|
@@ -524,11 +563,12 @@ A binding gives an entity a name within the program. `<Type>` is an Entity Type 
 TRANSITION <name> "<status>"
 ```
 
-Changes the status of the bound entity. It is performed only if all three hold:
+Changes the status of the bound entity. It is performed only if all of these hold:
 
-1. `<status>` is a status declared by the entity's Definition;
-2. the change from the current status to `<status>` is declared by the Definition;
-3. the precondition of that change holds (see **Preconditions**).
+1. the entity is structurally valid (read again now);
+2. `<status>` is a status declared by the entity's Definition;
+3. the change from the current status to `<status>` is declared by the Definition;
+4. the precondition of that change holds (see **Preconditions**).
 
 Then the entity's authoritative representation (for example its file) records the new status; the step is done only when it has. Otherwise the transition fails: nothing is changed. The agent MUST NOT choose another status or insert intermediate transitions.
 
@@ -541,10 +581,10 @@ A Definition writes each precondition in one of these forms. If a change lists s
 | Precondition | Holds when |
 |---|---|
 | `none` | always |
-| `verified: accepted` | the most recent `VERIFY <name>` in this execution established `<name>.accepted` |
-| `verified: rejected` | the most recent `VERIFY <name>` in this execution established `<name>.rejected` |
-| `human: <answer>` | the `TRANSITION` is inside the flow of a `WHEN <h>.<answer>`, and `HITL:<h>` has no `AUTO` |
-| `field <field> is set` | the entity's field `<field>` has a value |
+| `verified: accepted` | the most recent `VERIFY <name>` in this execution established `<name>.accepted`, **and** the entity's data has not changed since that `VERIFY` (other than by `TRANSITION <name>`) |
+| `verified: rejected` | the most recent `VERIFY <name>` in this execution established `<name>.rejected`, **and** the entity's data has not changed since that `VERIFY` (other than by `TRANSITION <name>`) |
+| `human: <answer>` | the `TRANSITION` is inside the flow of a `WHEN <h>.<answer>`, `HITL:<h>` has no `AUTO`, **and** the question of `HITL:<h>` contains the entity's identity (for example `"Is TASK-0101 done?"`) |
+| `field <field> is set` | the entity's field `<field>` is present and not empty |
 
 A `human:` precondition can only be satisfied by a human's answer to a `HITL` without `AUTO`. The agent can never satisfy it.
 
@@ -556,7 +596,7 @@ A `human:` precondition can only be satisfied by a human's answer to a `HITL` wi
 | `REQUIRE` | the item cannot be obtained | its `FALLBACK` runs; if none, execution ends |
 | `HITL` | the response is insufficient or unavailable | its `FALLBACK` runs; if none, execution ends |
 | `VERIFY` | the criteria do not determine exactly one outcome | its `FALLBACK` runs; if none, execution ends |
-| `TRANSITION <name>` | the status or change is not declared, or the precondition does not hold | its `FALLBACK` runs; if none, execution ends |
+| `TRANSITION <name>` | the entity is not structurally valid, the status or change is not declared, or the precondition does not hold | its `FALLBACK` runs; if none, execution ends |
 
 A failed operation changes nothing and establishes no outcome.
 
@@ -703,16 +743,16 @@ A program that breaks any of these rules is INVALID. It MUST be rejected as a wh
 
 | Rule | INVALID if |
 |---|---|
-| V1 | the indentation violates **Indentation and scope** |
+| V1 | the indentation violates **Indentation and scope**, or a line matches no statement form of **Lines and statements** (for example `BREAK release`) |
 | V2 | `BREAK` is not inside a `LOOP` |
 | V3 | `BREAK` is inside a `FORK` branch, and the `LOOP` it would leave is outside that branch |
 | V4 | a `→` item is under anything other than `WHEN`, `FORK` or `FALLBACK`; or `→ FALLBACK` is not directly under a `HITL`, `REQUIRE`, `VERIFY` or `TRANSITION <name>`; or one of them has more than one `FALLBACK` |
 | V5 | `AUTO` is not immediately followed, on the same line, by a decision `HITL:<name>[…]` |
 | V6 | a `WHEN` tests `x.y`, and the program contains neither `VERIFY x` with `y` being `accepted` or `rejected`, nor `HITL:x[…]` listing `y` |
-| V7 | two `HITL` statements use the same name, a name is used by both a `HITL` and a `VERIFY`, or an answer list is empty or repeats an answer |
+| V7 | two `HITL` statements use the same name, a name is used by both a `HITL` and a `VERIFY`, or an answer list is empty or repeats an answer. (A `HITL` name may equal a `DELEGATE`, `EMIT` or `REQUIRE` argument.) |
 | V8 | the last item of a fallback flow is not `STOP` or `BREAK` |
 | V9 | a `JOIN` has no corresponding `FORK`, or a `FORK` has fewer than two branches |
-| V10 | a `WHEN` tests a subject that a branch of a `FORK` in the same flow establishes, and that `FORK` has not been joined before the `WHEN` |
+| V10 | a `WHEN` tests a subject that a branch of a `FORK` in the same flow establishes, and no `JOIN` of that `FORK` is written between the `FORK` and the `WHEN`. Judged on the program text only: a `FORK` without a `JOIN` makes its branch outcomes untestable in that flow. |
 | V11 | a binding is indented, or follows a statement that is not a binding, or binds a name that is already bound, or its relation starts from a name not bound on an earlier line |
 | V12 | `TRANSITION <name> "<status>"` uses a name that is not bound, or a bound name is used as a `HITL` name |
 
@@ -752,7 +792,7 @@ string     = '"' , { character - '"' } , '"' ;
 
 An agent that executes a program MUST follow this procedure:
 
-1. **Validate first.** Check rules V1–V12. If any is broken, do not execute. Report each broken rule by its number.
+1. **Validate first.** Check rules V1–V12. Always write the verdict first (trace line `0`). If any rule is broken, report each broken rule by its number and line, and do not execute.
 2. **Execute exactly what is written.** Run one statement at a time, following the rules of its section. Never skip, reorder, merge, or add statements.
 3. **Keep the execution state:**
    - the current position
@@ -768,6 +808,13 @@ When asked for an execution trace, write one line per executed step:
 ```form
 <n>. <statement as written> -> <effect>
 ```
+
+Trace rules:
+
+- Line `0` is the verdict: `0. validate -> VALID`, or `0. validate -> INVALID: V3 (line 7), V6 (line 11)` and nothing more.
+- Entering a `LOOP` for the first time writes no line. `LOOP:<name> -> loop again` is written each time the body starts again.
+- A decision `HITL` answered by the human is two lines: `-> waiting`, then `-> outcome <name>.<answer> (human)`. One answered by the agent under `AUTO` is one line: `-> outcome <name>.<answer> (agent)`.
+- `stop` and `failed: <reason>; stop` are always the last line. `(end of program) -> end` is written only when execution ends normally (rule 10).
 
 The effect is one of the following:
 
@@ -788,7 +835,7 @@ The effect is one of the following:
 - `stop`
 - `end`
 
-A failed operation (see **Failures**) is traced as `failed: <reason>; fallback` when its `FALLBACK` runs, and as `failed: <reason>; stop` when execution ends because it has none. For a `VERIFY` on an entity, the `outcome` effect also names the evidence, for example `outcome t1.accepted (evidence: all tests pass)`.
+A failed operation (see **Failures**) is traced as `failed: <reason>; fallback` when its `FALLBACK` runs, and as `failed: <reason>; stop` when execution ends because it has none. For a `VERIFY` on an entity, the `outcome` effect also names the evidence **for each criterion**, for example `outcome t1.accepted (evidence: item 1: test_lockout passes; item 2: test_reset passes)`.
 
 ## Complete example
 
@@ -823,6 +870,7 @@ Events:
 Trace:
 
 ```trace
+0. validate -> VALID
 1. REQUIRE repository -> done
 2. DELEGATE implementation -> done
 3. FORK -> branches started
@@ -842,7 +890,7 @@ Trace:
 17. WHEN implementation.accepted -> true: run flow
 18. BREAK -> break
 19. AUTO HITL:merge[approved, declined]("Merge this change?") -> waiting
-20. AUTO HITL:merge[approved, declined]("Merge this change?") -> outcome merge.approved
+20. AUTO HITL:merge[approved, declined]("Merge this change?") -> outcome merge.approved (human)
 21. WHEN merge.approved -> true: run flow
 22. TRANSITION "Merged" -> state = "Merged"
 23. WHEN merge.declined -> false: skip

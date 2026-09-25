@@ -38,7 +38,7 @@ If an item cannot be evaluated (its evidence is unavailable or the item is ambig
 
 ## Permitted changes by delegated work
 
-Delegated work may edit Description, Acceptance Criteria and Notes. It must not change `id`, `type` or `status`.
+Delegated work may edit Description, Acceptance Criteria and Notes only while the Task is `Todo`, `InProgress` or `Debugging`. In `Review` and `Done` it may edit only Notes. It never changes `id`, `type`, `status` or `adr`.
 
 ## Invariants
 

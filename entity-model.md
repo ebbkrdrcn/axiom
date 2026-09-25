@@ -361,7 +361,9 @@ A binding is satisfied only when:
 
 For a relation binding, the relation must also have exactly one target.
 
-If a binding cannot be satisfied, execution ends, as with `STOP`. No statement after the bindings runs.
+If a binding cannot be satisfied, execution ends, as with `STOP`. No statement after the bindings runs. This is an execution failure, not a validity error: the program itself stays valid.
+
+Bindings are resolved once, at the start. They are not re-checked; later changes to an entity are seen by re-reading it (Interpretation Rule 7).
 
 ### Binding Rules
 
@@ -432,15 +434,18 @@ which changes the state of the process, as defined by the DSL.
 
 An entity transition is valid only when:
 
-1. the target status is declared by the Definition;
-2. the change from the current status to the target status is declared by the Definition;
-3. the precondition of that change is satisfied.
+1. the entity is structurally valid;
+2. the target status is declared by the Definition;
+3. the change from the current status to the target status is declared by the Definition;
+4. the precondition of that change is satisfied.
 
 An invalid transition is not performed.
 
 Execution must not proceed as if it were performed, and the interpreter must not substitute a different status or insert intermediate transitions. The `TRANSITION` fails: its `FALLBACK` runs, or execution ends if it has none.
 
-A precondition `human: <answer>` holds only when the `TRANSITION` is inside the flow of `WHEN <h>.<answer>` for a `HITL:<h>` without `AUTO`. A human decision is therefore always obtained through a `HITL` in the process.
+A precondition `human: <answer>` holds only when the `TRANSITION` is inside the flow of `WHEN <h>.<answer>` for a `HITL:<h>` without `AUTO` whose question contains the entity's identity. A human decision is therefore always obtained through a `HITL` in the process, about that entity.
+
+A precondition `verified: accepted` (or `rejected`) holds only if the entity's data has not changed since that `VERIFY`, other than by `TRANSITION`. After any other change, the entity must be verified again.
 
 A valid transition is complete only when the authoritative representation records the new status.
 
