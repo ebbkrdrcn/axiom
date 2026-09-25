@@ -49,6 +49,20 @@ Section names refer to headings in `dsl.md`.
 | F-33 | — | VERIFY, HITL | Outcome lifetime, overwriting and name reuse (loops, repeated HITL names). | B-, C- and D-CONF. | part of **DP-2** |
 | F-34 | — | FALLBACK | Flow after a FALLBACK flow that does not stop. | All 4 CONF probes. | **DP-6** |
 | F-35 | — | HITL | A response that matches more than one tested answer. | B-CONF #8. | open; depends on **DP-3** |
+| F-36 | — | HITL | Mapping a paraphrased or feedback-laden response ("Not like this, rewrite the intro.") to a listed answer. | T2 S12: Haiku 3/3 → insufficient; Sonnet 3/3 flag it | open (spec-gap) → v3 |
+| F-37 | — | AUTO | The defining sentence "when it is sufficiently determined" omits authority. | T2 X06-h1 | open (misleading-wording) → v3 |
+| F-38 | — | WHEN, LOOP | "continue after the `WHEN`" is read as the next text line when a WHEN ends a LOOP body. | T2 S20-h2 | open (misleading-wording) → v3 |
+| F-39 | — | Trace | No rule for the first LOOP entry in a trace (example only). | T2 ST01-h3, S20 Sonnet | open → v3 |
+| F-40 | — | Trace | No line form for an AUTO HITL answered by the agent. | T2 ST01 (all inferred) | open → v3 |
+| F-41 | — | Trace | No effect for "ends because REQUIRE/HITL failed with no FALLBACK"; `end` added after `stop`. | T2 S08, ST04-h1, ST06-s1, S12-h3 | open → v3 |
+| F-42 | — | Validity | A line matching no statement form (e.g. `BREAK release`) has no rule number. | T2 S20 Sonnet ×3 | open → v3 (make it V1) |
+| F-43 | — | Examples | `invalid` examples do not name the rules they break. | T2 S05 | open → v3 |
+| F-44 | — | TRANSITION | State before the first TRANSITION is undefined. | T2 ST06, S09, S10 | open → v3 |
+| F-45 | — | DELEGATE, VERIFY | The `VERIFY x` ↔ `DELEGATE x` name link is shown only in examples. | T2 ST05/ST06 | open → v3 |
+| F-46 | — | HITL | When the runtime stops waiting (unavailable) is not stated as runtime-defined. | T2 S13 Sonnet ×3 | open → v3 |
+| F-47 | — | Names | May a HITL name equal an EMIT artifact name? | T2 ST07, X02 | open (harmless) → v3 |
+| F-48 | — | WHEN | Rule 7 wording: an established other outcome also makes WHEN false. | T2 S06-h1, S10-h3 | open → v3 |
+| F-49 | — | Execution protocol | The validity verdict is not required to appear before the trace. | T2 S21 | open → v3 |
 
 ---
 

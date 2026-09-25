@@ -27,3 +27,31 @@ Protocol: 16 scenarios × 3 blind probes (sonnet) and 2 confusion probes. Each p
 - **Findings:** 5 seeds verified (F-01…F-05 confirmed); F-16…F-28 added; 8 decision points (DP-1…DP-8) raised.
 - **Corpus:** added S17–S21 (pass/fail outcome names, FORK without JOIN / DELEGATE completion, fallback without STOP, nested loops, WHEN before its outcome exists). Adjusted S04, S07, S09 and S14 per critic scenario issues.
 - **Stopped for owner decisions DP-1…DP-8** before iteration 2.
+
+## DSL v2 (2026-09-25, owner delegated all decisions)
+Full rewrite of `dsl.md`. The v2 design resolves DP-1…DP-8:
+- decision HITL `HITL:<name>[a, b]("q")` with declared answers
+- `AUTO` as a same-line prefix
+- VERIFY outcomes closed to accepted/rejected
+- FALLBACK must end with STOP/BREAK (V8), and a missing FALLBACK ends execution
+- REQUIRE may take a FALLBACK
+- BREAK in a FORK branch is invalid (V3)
+- DELEGATE completes on delivery
+- the response-timing rule
+- validity rules V1–V10, EBNF, the execution protocol and trace format, and a complete example with its trace
+
+Also added the deterministic checker `tools/dslcheck.py` (all spec blocks pass) and `tools/lint_outputs.py`. The corpus was rebuilt (35 scenarios; v1 corpus moved to `scenarios-v1/`).
+
+## Test 2 (2026-09-25)
+Protocol: 35 scenarios × (3 Sonnet + 3 Haiku 4.5) blind probes and 2 CONF probes; 7 critics. Report: `iterations/02/critic-report.md`.
+- **Sonnet:** 34/35 scenarios, 341/342 D-items.
+- **Haiku:** 29/35 scenarios, 331/342 D-items (98.2% after scenario-wording issues are removed).
+- **DANGER:** 0 across 210 probes. Linter: every authored program VALID.
+- **Failures:**
+  - S05 and S21: scenario wording.
+  - S12 (Haiku): answer mapping, spec-gap F-36.
+  - X06 (Haiku): AUTO sentence, F-37.
+  - S20 (Haiku): loop scope, F-38.
+  - S10 (Haiku): model error.
+- **New findings:** F-36…F-49.
+- The spec is unchanged in this test; v3 edits await owner approval.
