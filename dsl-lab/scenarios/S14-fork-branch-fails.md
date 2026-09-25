@@ -27,7 +27,7 @@ Produce the step-by-step execution and state the final process state.
 - D1 Both branches execute concurrently; within each branch DELEGATE precedes VERIFY. (FORK)
 - D2 A rejected VERIFY is an outcome, not an aborted flow; the integration branch completes. JOIN waits for both branches, then execution continues. (VERIFY, JOIN)
 
-### Most likely reading (by inference only — F-06)
+### Determined by spec from iteration 2 (WHEN independence and TRANSITION overwrite made explicit); inference only in iteration 1
 - D3 After JOIN, WHEN constructs are evaluated in declaration order; `unit-tests.accepted` holds → TRANSITION "Ready"; then `integration-tests.rejected` holds → TRANSITION "Debugging". (WHEN is a statement; Flow: declaration order; nothing states exclusivity)
 - D4 Final state: "Debugging".
 

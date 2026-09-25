@@ -28,8 +28,10 @@ EMIT deployment-log
 - D5 `DELEGATE deployment` and `EMIT deployment-log` follow the HITL in the normal flow (not inside FALLBACK). (FALLBACK: "not … after the normal flow"; Flow)
 - D6 No AUTO (the requirement gives the agent no authority to answer). (HITL)
 
+- D7 (from iteration 2) Either multi-statement form is accepted: one `→` per statement, or one `→` plus nested lines — the spec declares them equivalent (FALLBACK "Form").
+
 ### Underdetermined (→ findings)
-- U1 Form of a multi-statement fallback flow: one `→` per statement vs one `→` plus nested lines (F-04, F-11).
+- (iteration 1) U1 Form of a multi-statement fallback flow — resolved by spec edit in iteration 1.
 
 ### Pass rule
-D1–D6 in all probes; same fallback-flow form.
+D1–D6 in all probes (D7 from iteration 2).

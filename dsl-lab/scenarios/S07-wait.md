@@ -24,7 +24,8 @@ Answer:
 
 ### Underdetermined (→ findings)
 - U1 (Q1) WAIT takes no argument; the DSL does not say which event/response it waits for (F-09). A correct answer says the spec leaves it unspecified (may name "completion of the delegated migration" only as an assumption).
-- U2 (Q4) No timeout/fallback defined for WAIT; execution stays suspended (F-09).
+- (moved to D from iteration 2) D3 (Q4) Execution remains suspended at WAIT; the DSL has no timeout (WAIT clarifications).
+- U2 Whether a timeout/fallback can be expressed for WAIT at all (F-09 / DP-8).
 
 ### Pass rule
 D1, D2 in all probes; Q1/Q4 answered consistently.

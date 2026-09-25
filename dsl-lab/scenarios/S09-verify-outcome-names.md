@@ -25,7 +25,8 @@ WHEN tests.failed
 - U1 (Q1) Outcome names are not defined; examples use `.accepted/.rejected` (VERIFY section) and `.passed/.failed` (WHEN section) (F-03).
 - U2 (Q2) Whether `implementation.passed` is valid after `VERIFY implementation` (F-03).
 - U3 (Q3) `tests` is produced by no statement; the spec has no rule for condition identifiers that nothing established (F-03).
-- U4 (Q4) Depends on U1–U3 (F-03).
+- D2 (Q4, partial) `TRANSITION "Review"` is not executed on a negative verification under every reading.
+- U4 (Q4) Whether `TRANSITION "Debugging"` can execute depends on U3 (F-03).
 
 ### Pass rule
 All probes state D1 and give the same answers to Q1–Q4. Expected to diverge on the baseline spec.
