@@ -63,6 +63,8 @@ Section names refer to headings in `dsl.md`.
 | F-47 | — | Names | May a HITL name equal an EMIT artifact name? | T2 ST07, X02 | open (harmless) → v3 |
 | F-48 | — | WHEN | Rule 7 wording: an established other outcome also makes WHEN false. | T2 S06-h1, S10-h3 | open → v3 |
 | F-49 | — | Execution protocol | The validity verdict is not required to appear before the trace. | T2 S21 | open → v3 |
+| F-50 | — | FORK, BREAK, V3 | **Contradiction:** the FORK table says any `BREAK` in a branch is INVALID, while BREAK/V3 allow a BREAK that leaves a LOOP nested inside the same branch. | T2 CONF-s1 #1 | open (contradiction) → v3 |
+| F-51 | — | V10 | V10 is static (text order) but its wording and the Outcomes rationale suggest a dynamic reading; a FORK with no JOIN makes its outcomes untestable forever. | T2 CONF-s1 #2 | open → v3 (state: static) |
 
 ---
 

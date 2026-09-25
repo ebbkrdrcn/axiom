@@ -74,9 +74,11 @@ Both models passed **8/8**, with 0 DANGER. This covered:
 | N11 | When the runtime stops waiting for a HITL is not stated as runtime-defined | S13 (Sonnet ×3) | spec-gap (low) |
 | N12 | May an HITL name equal an EMIT artifact name? | ST07, X02 | spec-gap (harmless) |
 | N13 | Rule 7 wording: an established *other* outcome also makes `WHEN` false | S06-h1, S10-h3 | misleading-wording (low) |
+| N15 | **Contradiction:** the FORK table says every BREAK in a branch is INVALID; BREAK/V3 allow a BREAK that leaves a LOOP nested inside the branch | CONF-s1 #1 | contradiction |
+| N16 | Is V10 static or dynamic? A FORK with no JOIN makes its outcomes untestable forever | CONF-s1 #2 | underspecified |
 | N14 | The execution protocol does not require the validity verdict to be written before the trace | S21 | spec-gap |
 
-The confusion probes (CONF-h1: 25 items; CONF-s1: see `probes/CONF-s1.md`) mostly re-raise N4–N14 and earlier findings. The additional items are:
+The confusion probes (CONF-h1: 25 items; CONF-s1: 15 items) mostly re-raise N4–N14 and earlier findings. The additional items are:
 
 - whether FALLBACK's "last item" can be a compound
 - whether blank lines break scope
