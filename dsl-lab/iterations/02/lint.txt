@@ -1,0 +1,256 @@
+S01-h1.md block1: VALID
+S01-h2.md block1: VALID
+S01-h3.md block1: VALID
+S01-s1.md block1: VALID
+S01-s2.md block1: VALID
+S01-s3.md block1: VALID
+S02-h1.md block1: VALID
+S02-h2.md block1: VALID
+S02-h3.md block1: VALID
+S02-s1.md block1: VALID
+S02-s2.md block1: VALID
+S02-s3.md block1: VALID
+S03-h1.md block1: VALID
+S03-h2.md block1: VALID
+S03-h3.md block1: VALID
+S03-s1.md block1: VALID
+S03-s2.md block1: VALID
+S03-s3.md block1: VALID
+S04-h1.md block1: VALID
+S04-h2.md block1: VALID
+S04-h3.md block1: VALID
+S04-s1.md block1: VALID
+S04-s2.md block1: VALID
+S04-s3.md block1: VALID
+S05-h1.md: NO DSL BLOCK
+S05-h2.md block1: VALID
+S05-h2.md block2: VALID
+S05-h2.md block3: VALID
+S05-h3.md: NO DSL BLOCK
+S05-s1.md block1: INVALID line 2: V5: AUTO must be immediately followed by a decision HITL:<name>[…](…) on the same line | line 1: V1/V4: HITL may only contain '→ FALLBACK' | line 3: V6: WHEN decision.uncertain refers to an outcome the program cannot produce
+S05-s1.md block2: INVALID line 1: V5: AUTO must be immediately followed by a decision HITL:<name>[…](…) on the same line | line 2: V6: WHEN decision.uncertain refers to an outcome the program cannot produce
+S05-s1.md block3: INVALID line 4: V2: BREAK is not inside a LOOP
+S05-s1.md block4: VALID
+S05-s1.md block5: INVALID line 2: V8: fallback flow does not end with STOP or BREAK
+S05-s2.md block1: INVALID line 2: V5: AUTO must be immediately followed by a decision HITL:<name>[…](…) on the same line | line 1: V1/V4: HITL may only contain '→ FALLBACK' | line 3: V6: WHEN decision.uncertain refers to an outcome the program cannot produce
+S05-s2.md block2: INVALID line 4: V2: BREAK is not inside a LOOP
+S05-s2.md block3: VALID
+S05-s2.md block4: INVALID line 2: V8: fallback flow does not end with STOP or BREAK
+S05-s3.md block1: INVALID line 2: V5: AUTO must be immediately followed by a decision HITL:<name>[…](…) on the same line | line 1: V1/V4: HITL may only contain '→ FALLBACK' | line 3: V6: WHEN decision.uncertain refers to an outcome the program cannot produce
+S05-s3.md block2: INVALID line 4: V2: BREAK is not inside a LOOP
+S05-s3.md block3: VALID
+S05-s3.md block4: INVALID line 2: V8: fallback flow does not end with STOP or BREAK
+S06-h1.md: NO DSL BLOCK
+S06-h2.md: NO DSL BLOCK
+S06-h3.md: NO DSL BLOCK
+S06-s1.md block1: VALID
+S06-s2.md block1: VALID
+S06-s3.md block1: VALID
+S07-h1.md block1: VALID
+S07-h2.md: NO DSL BLOCK
+S07-h3.md block1: VALID
+S07-s1.md block1: VALID
+S07-s1.md block2: VALID
+S07-s2.md block1: VALID
+S07-s2.md block2: VALID
+S07-s3.md block1: VALID
+S07-s3.md block2: VALID
+S08-h1.md block1: VALID
+S08-h2.md: NO DSL BLOCK
+S08-h3.md block1: VALID
+S08-s1.md block1: VALID
+S08-s2.md block1: VALID
+S08-s3.md block1: VALID
+S09-h1.md: NO DSL BLOCK
+S09-h2.md: NO DSL BLOCK
+S09-h3.md: NO DSL BLOCK
+S09-s1.md block1: INVALID line 3: V6: WHEN implementation.passed refers to an outcome the program cannot produce | line 5: V6: WHEN tests.failed refers to an outcome the program cannot produce
+S09-s2.md block1: INVALID line 3: V6: WHEN implementation.passed refers to an outcome the program cannot produce | line 5: V6: WHEN tests.failed refers to an outcome the program cannot produce
+S09-s3.md block1: INVALID line 3: V6: WHEN implementation.passed refers to an outcome the program cannot produce | line 5: V6: WHEN tests.failed refers to an outcome the program cannot produce
+S10-h1.md block1: VALID
+S10-h2.md block1: VALID
+S10-h3.md block1: VALID
+S10-s1.md block1: VALID
+S10-s2.md block1: VALID
+S10-s3.md block1: VALID
+S11-h1.md block1: INVALID line 6: V3: BREAK inside a FORK branch leaves a LOOP outside it
+S11-h1.md block2: VALID
+S11-h2.md block1: INVALID line 6: V3: BREAK inside a FORK branch leaves a LOOP outside it
+S11-h3.md block1: VALID
+S11-s1.md block1: INVALID line 6: V3: BREAK inside a FORK branch leaves a LOOP outside it
+S11-s1.md block2: VALID
+S11-s2.md block1: INVALID line 6: V3: BREAK inside a FORK branch leaves a LOOP outside it
+S11-s2.md block2: VALID
+S11-s3.md block1: INVALID line 6: V3: BREAK inside a FORK branch leaves a LOOP outside it
+S12-h1.md block1: VALID
+S12-h2.md: NO DSL BLOCK
+S12-h3.md block1: VALID
+S12-s1.md block1: VALID
+S12-s2.md block1: VALID
+S12-s3.md block1: VALID
+S13-h1.md: NO DSL BLOCK
+S13-h2.md: NO DSL BLOCK
+S13-h3.md: NO DSL BLOCK
+S13-s1.md block1: VALID
+S13-s2.md: NO DSL BLOCK
+S13-s3.md block1: VALID
+S14-h1.md: NO DSL BLOCK
+S14-h2.md block1: VALID
+S14-h3.md: NO DSL BLOCK
+S14-s1.md block1: VALID
+S14-s2.md block1: VALID
+S14-s3.md block1: VALID
+S15-h1.md block1: VALID
+S15-h2.md block1: VALID
+S15-h3.md: NO DSL BLOCK
+S15-s1.md block1: VALID
+S15-s2.md: NO DSL BLOCK
+S15-s3.md: NO DSL BLOCK
+S16-h1.md: NO DSL BLOCK
+S16-h2.md block1: VALID
+S16-h3.md block1: VALID
+S16-s1.md block1: VALID
+S16-s2.md block1: VALID
+S16-s3.md: NO DSL BLOCK
+S17-h1.md block1: VALID
+S17-h2.md block1: VALID
+S17-h3.md block1: VALID
+S17-s1.md block1: VALID
+S17-s2.md block1: VALID
+S17-s3.md block1: VALID
+S18-h1.md block1: VALID
+S18-h2.md block1: VALID
+S18-h2.md block2: VALID
+S18-h2.md block3: VALID
+S18-h3.md block1: VALID
+S18-s1.md block1: VALID
+S18-s2.md block1: VALID
+S18-s2.md block2: VALID
+S18-s3.md block1: VALID
+S19-h1.md block1: INVALID line 2: V8: fallback flow does not end with STOP or BREAK
+S19-h1.md block2: VALID
+S19-h2.md block1: INVALID line 2: V8: fallback flow does not end with STOP or BREAK
+S19-h3.md block1: VALID
+S19-s1.md block1: INVALID line 2: V8: fallback flow does not end with STOP or BREAK
+S19-s2.md block1: INVALID line 2: V8: fallback flow does not end with STOP or BREAK
+S19-s3.md block1: INVALID line 2: V8: fallback flow does not end with STOP or BREAK
+S20-h1.md: NO DSL BLOCK
+S20-h2.md: NO DSL BLOCK
+S20-h3.md: NO DSL BLOCK
+S20-s1.md block1: VALID
+S20-s2.md block1: VALID
+S20-s3.md block1: VALID
+S21-h1.md: NO DSL BLOCK
+S21-h2.md block1: VALID
+S21-h3.md block1: VALID
+S21-s1.md block1: VALID
+S21-s2.md block1: VALID
+S21-s3.md block1: VALID
+ST01-h1.md: NO DSL BLOCK
+ST01-h2.md: NO DSL BLOCK
+ST01-h3.md: NO DSL BLOCK
+ST01-s1.md: NO DSL BLOCK
+ST01-s2.md: NO DSL BLOCK
+ST01-s3.md: NO DSL BLOCK
+ST02-h1.md block1: VALID
+ST02-h2.md block1: VALID
+ST02-h3.md block1: VALID
+ST02-s1.md block1: VALID
+ST02-s2.md block1: VALID
+ST02-s3.md block1: VALID
+ST03-h1.md: NO DSL BLOCK
+ST03-h2.md: NO DSL BLOCK
+ST03-h3.md: NO DSL BLOCK
+ST03-s1.md: NO DSL BLOCK
+ST03-s2.md: NO DSL BLOCK
+ST03-s3.md: NO DSL BLOCK
+ST04-h1.md: NO DSL BLOCK
+ST04-h2.md: NO DSL BLOCK
+ST04-h3.md: NO DSL BLOCK
+ST04-s1.md block1: VALID
+ST04-s2.md block1: VALID
+ST04-s3.md block1: VALID
+ST05-h1.md block1: VALID
+ST05-h2.md: NO DSL BLOCK
+ST05-h3.md block1: VALID
+ST05-s1.md block1: VALID
+ST05-s2.md block1: VALID
+ST05-s3.md block1: VALID
+ST06-h1.md block1: VALID
+ST06-h2.md: NO DSL BLOCK
+ST06-h3.md block1: VALID
+ST06-s1.md block1: VALID
+ST06-s2.md block1: VALID
+ST06-s3.md block1: VALID
+ST07-h1.md block1: VALID
+ST07-h2.md block1: VALID
+ST07-h3.md block1: VALID
+ST07-s1.md block1: VALID
+ST07-s2.md block1: VALID
+ST07-s3.md block1: VALID
+ST08-h1.md: NO DSL BLOCK
+ST08-h2.md: NO DSL BLOCK
+ST08-h3.md: NO DSL BLOCK
+ST08-s1.md: NO DSL BLOCK
+ST08-s2.md: NO DSL BLOCK
+ST08-s3.md block1: VALID
+X01-h1.md block1: VALID
+X01-h2.md block1: VALID
+X01-h3.md block1: VALID
+X01-s1.md block1: VALID
+X01-s2.md block1: VALID
+X01-s3.md block1: VALID
+X02-h1.md block1: VALID
+X02-h2.md block1: VALID
+X02-h3.md block1: VALID
+X02-s1.md block1: VALID
+X02-s2.md block1: VALID
+X02-s3.md block1: VALID
+X03-h1.md block1: VALID
+X03-h2.md: NO DSL BLOCK
+X03-h3.md: NO DSL BLOCK
+X03-s1.md block1: VALID
+X03-s2.md: NO DSL BLOCK
+X03-s3.md block1: VALID
+X04-h1.md: NO DSL BLOCK
+X04-h2.md: NO DSL BLOCK
+X04-h3.md: NO DSL BLOCK
+X04-s1.md: NO DSL BLOCK
+X04-s2.md block1: VALID
+X04-s3.md: NO DSL BLOCK
+X05-h1.md block1: VALID
+X05-h1.md block2: INVALID line 1: V5: AUTO must be immediately followed by a decision HITL:<name>[…](…) on the same line
+X05-h1.md block3: INVALID line 1: V1: unrecognised statement: 'HITL:deploy[yes, no]("Deploy to production?") AUTO' | line 2: V6: WHEN deploy.yes refers to an outcome the program cannot produce
+X05-h1.md block4: INVALID line 1: V5: AUTO must be immediately followed by a decision HITL:<name>[…](…) on the same line
+X05-h2.md: NO DSL BLOCK
+X05-h3.md block1: VALID
+X05-h3.md block2: INVALID line 1: V5: AUTO must be immediately followed by a decision HITL:<name>[…](…) on the same line
+X05-h3.md block3: INVALID line 1: V1: unrecognised statement: 'HITL:deploy[yes, no]("Deploy to production?") AUTO' | line 2: V6: WHEN deploy.yes refers to an outcome the program cannot produce
+X05-h3.md block4: INVALID line 1: V5: AUTO must be immediately followed by a decision HITL:<name>[…](…) on the same line
+X05-s1.md block1: VALID
+X05-s1.md block2: INVALID line 1: V5: AUTO must be immediately followed by a decision HITL:<name>[…](…) on the same line
+X05-s1.md block3: INVALID line 1: V5: AUTO must be immediately followed by a decision HITL:<name>[…](…) on the same line
+X05-s1.md block4: INVALID line 1: V1: unrecognised statement: 'HITL:deploy[yes, no]("Deploy to production?") AUTO' | line 2: V6: WHEN deploy.yes refers to an outcome the program cannot produce
+X05-s1.md block5: INVALID line 1: V5: AUTO must be immediately followed by a decision HITL:<name>[…](…) on the same line
+X05-s1.md block6: INVALID line 1: V5: AUTO must be immediately followed by a decision HITL:<name>[…](…) on the same line | line 2: V6: WHEN decision.uncertain refers to an outcome the program cannot produce
+X05-s2.md block1: VALID
+X05-s2.md block2: INVALID line 1: V5: AUTO must be immediately followed by a decision HITL:<name>[…](…) on the same line
+X05-s2.md block3: INVALID line 1: V5: AUTO must be immediately followed by a decision HITL:<name>[…](…) on the same line
+X05-s2.md block4: INVALID line 1: V1: unrecognised statement: 'HITL:deploy[yes, no]("Deploy to production?") AUTO' | line 2: V6: WHEN deploy.yes refers to an outcome the program cannot produce
+X05-s2.md block5: INVALID line 1: V5: AUTO must be immediately followed by a decision HITL:<name>[…](…) on the same line
+X05-s2.md block6: INVALID line 1: V5: AUTO must be immediately followed by a decision HITL:<name>[…](…) on the same line | line 2: V6: WHEN decision.uncertain refers to an outcome the program cannot produce
+X05-s3.md block1: VALID
+X05-s3.md block2: INVALID line 1: V5: AUTO must be immediately followed by a decision HITL:<name>[…](…) on the same line
+X05-s3.md block3: INVALID line 1: V5: AUTO must be immediately followed by a decision HITL:<name>[…](…) on the same line
+X05-s3.md block4: INVALID line 1: V1: unrecognised statement: 'HITL:deploy[yes, no]("Deploy to production?") AUTO' | line 2: V6: WHEN deploy.yes refers to an outcome the program cannot produce
+X05-s3.md block5: INVALID line 1: V5: AUTO must be immediately followed by a decision HITL:<name>[…](…) on the same line
+X05-s3.md block6: INVALID line 1: V5: AUTO must be immediately followed by a decision HITL:<name>[…](…) on the same line | line 2: V6: WHEN decision.uncertain refers to an outcome the program cannot produce
+X06-h1.md: NO DSL BLOCK
+X06-h2.md block1: VALID
+X06-h2.md block2: VALID
+X06-h2.md block3: VALID
+X06-h3.md: NO DSL BLOCK
+X06-s1.md block1: VALID
+X06-s2.md block1: VALID
+X06-s3.md block1: VALID
+X06-s3.md block2: VALID
