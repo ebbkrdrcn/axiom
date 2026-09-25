@@ -42,6 +42,13 @@ Section names refer to headings in `dsl.md`.
 | F-26 | — | HITL | Does the flow wait at a HITL? What follows a usable response? | S12, S13. CONF-p1 #8. | **fixed (it01)**: HITL waiting sentence |
 | F-27 | — | AUTO, FALLBACK | AUTO's escalation to a human is confused with FALLBACK. | S05-p3 (misleading-wording). | **fixed (it01)**: AUTO note |
 | F-28 | — | DELEGATE | Actor selection; closed TRANSITION vocabulary; EMIT allowed before VERIFY. | CONF-p2 #13/#14, CONF-p1 #16/#17. | wontfix (runtime-independent by design) |
+| F-29 | — | HITL, FALLBACK | A HITL **without** FALLBACK whose response is unavailable or insufficient: suspend indefinitely, or invalid? | AUTO experiment: flagged in X06 in all variants; every probe assumed suspension. | needs-decision (joins **DP-6**) |
+| F-30 | — | HITL (provisional DP-3 A) | The scope of "the WHEN constructs that follow", which defines a HITL's answer set. | AUTO experiment: all 4 CONF probes. | open; depends on **DP-3** |
+| F-31 | — | HITL, FALLBACK | Two definitions of "insufficient": the answer matches no tested answer, vs. the response does not provide the requested decision. | A-CONF #2. | open; depends on **DP-3** |
+| F-32 | — | AUTO | Must an AUTO answer be one of the tested answers? "protocol-compatible" is undefined. | All 4 CONF probes. | open (wording) |
+| F-33 | — | VERIFY, HITL | Outcome lifetime, overwriting and name reuse (loops, repeated HITL names). | B-, C- and D-CONF. | part of **DP-2** |
+| F-34 | — | FALLBACK | Flow after a FALLBACK flow that does not stop. | All 4 CONF probes. | **DP-6** |
+| F-35 | — | HITL | A response that matches more than one tested answer. | B-CONF #8. | open; depends on **DP-3** |
 
 ---
 
@@ -50,6 +57,8 @@ Section names refer to headings in `dsl.md`.
 Each decision point lists options; the recommended option comes first.
 
 ### DP-1: AUTO syntax and binding to HITL (F-01, F-02)
+
+> **Experiment result** (`experiments/auto-syntax/report.md`): with the syntax fully documented, variants A, B, C and D all scored 6/6 with 0 errors and 0 hesitations. The placement is not decisive; the documentation is. Choosing among them needs a stress test (cold reading, a weaker model, harder programs) or design criteria.
 
 - **A (recommended). Prefix modifier on one HITL: `AUTO HITL("Merge this change?")`.** AUTO applies only to that HITL. The agent resolves the decision itself when it is sufficiently determined; otherwise the HITL is asked normally, and the HITL's FALLBACK (if any) still applies to the human's response. This is local and explicit, it reads naturally, and all S13 probes understood the intent even while calling the form invalid.
 - B. Modifier line under the HITL, like FALLBACK: `HITL("…")` followed by an indented `→ AUTO`. This is what S01-p1 wrote. It mixes AUTO into the `→` arrow system.
