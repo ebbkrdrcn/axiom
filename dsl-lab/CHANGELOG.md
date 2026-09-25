@@ -76,3 +76,10 @@ Protocol: 35 scenarios × (3 Sonnet + 3 Haiku 4.5) blind probes and 2 CONF probe
 - `docs/adr/`: ADR-0001…ADR-0014, all `Proposed`. They record the decisions so far: model as interpreter, Haiku minimum, decision HITL, AUTO prefix, closed VERIFY outcomes, the failure rule, BREAK×FORK, DELEGATE completion, WAIT, the Entity Model, DSL entity integration, terminology, the undecidable VERIFY, and the test method.
 - `docs/tasks/`: TASK-0001…TASK-0012, all `Todo`. They cover findings F-36…F-51, scenario fixes, the entity test, Test 3 and status conditions. `findings.md` links each finding to its task.
 - `tools/entitycheck.py`: checks entity files against their Template (fields, id format, declared status, required sections, duplicate ids). All 26 files are VALID.
+
+## Entity test E1 (2026-09-25)
+Protocol: 12 entity scenarios × (5 Haiku + 2 Sonnet) against a frozen fixture, plus 2 CONF probes; 3 critics. Report: `iterations/E1/critic-report.md`.
+- **Sonnet:** 11/12 scenarios, 109/110 D-items; 12/12 after the scenario fix.
+- **Haiku:** 8/12 scenarios, 264/275 D-items; 97.1% adjusted. **1 DANGER** (E03-h2: resolved a duplicate identity by file name and changed the file).
+- **Held in every probe:** AUTO cannot satisfy `human:`; undeclared transition → FALLBACK; undecidable VERIFY → stop; re-read after DELEGATE; ADR acceptance flow.
+- **New findings:** F-52…F-60. Two are high risk (F-55 stale `verified:`, F-56 `human:` not tied to the entity).

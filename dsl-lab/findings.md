@@ -65,6 +65,15 @@ Section names refer to headings in `dsl.md`.
 | F-49 | — | Execution protocol | The validity verdict is not required to appear before the trace. | T2 S21 | open → TASK-0004 |
 | F-50 | — | FORK, BREAK, V3 | **Contradiction:** the FORK table says any `BREAK` in a branch is INVALID, while BREAK/V3 allow a BREAK that leaves a LOOP nested inside the same branch. | T2 CONF-s1 #1 | open (contradiction) → TASK-0006 |
 | F-51 | — | V10 | V10 is static (text order) but its wording and the Outcomes rationale suggest a dynamic reading; a FORK with no JOIN makes its outcomes untestable forever. | T2 CONF-s1 #2 | open → TASK-0007 |
+| F-52 | — | Entities › Binding | An unsatisfied binding is an execution failure, not INVALID; this is not stated explicitly. | E1: E03-h4/h5, E05-h3 | open → v3 |
+| F-53 | — | Entities › Binding | The DSL does not repeat "identity only from `id`, never from the file name". | E1: E03-h2 (DANGER) | open → v3 |
+| F-54 | — | Trace | The evidence example is too generic; evidence should be named per criterion. | E1: E01-h5 | open → TASK-0004 |
+| F-55 | — | Preconditions | A stale `verified:` outcome: the entity is edited after VERIFY and the TRANSITION still passes. | E1: CONF-E-s1 #1 | open (high) → v3 |
+| F-56 | — | Preconditions | `human: <answer>` is not tied to the entity or transition being decided. | E1: CONF-E-s1 #2 | open (high) → v3 |
+| F-57 | — | Task Definition | No status-based restriction on edits by delegated work. | E1: CONF-E-s1 #3 | open → contract |
+| F-58 | — | Preconditions | `field <f> is set`: "has a value" is undefined. | E1: CONF-E ×2 | open → v3 |
+| F-59 | — | Entities › TRANSITION | Failure conditions omit "entity no longer structurally valid". | E1: CONF-E-s1 #9 | open → v3 |
+| F-60 | — | Entities › Binding | A binding is checked once or continuously: not stated. | E1: CONF-E-h1 #4 | open → v3 |
 
 ---
 
