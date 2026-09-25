@@ -16,8 +16,8 @@ H
   cat "$SPEC"
   printf '\n</specification>\n\n<task>\n'
 }
-for f in "$LAB"/scenarios/S*.md; do
-  id=$(basename "$f" | cut -d- -f1)
+for f in "$LAB"/scenarios/*.md; do
+  id=$(basename "$f" .md | cut -d- -f1)
   { header; awk '/^## Task/{on=1;next} /^## Expected/{on=0} on' "$f"; printf '</task>\n'; } > "$OUT/in/$id.md"
 done
 { header; cat <<'T'
