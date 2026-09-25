@@ -71,3 +71,8 @@ Protocol: 35 scenarios × (3 Sonnet + 3 Haiku 4.5) blind probes and 2 CONF probe
 - **`entity-model.md`:** aligned with the decisions (State → Data, closed outcomes, failure behaviour, precondition forms, V11/V12 references).
 - **`docs/types/`:** Task and ADR contracts (`template.md`, `definition.md`, `representation.md`).
 - **`tools/dslcheck.py`:** parses bindings and entity TRANSITION, allows FALLBACK under VERIFY and entity TRANSITION, and checks V11/V12. All `dsl.md` examples pass, and lint results on the Test 2 outputs are unchanged.
+
+## Project docs as entities (2026-09-25, owner-approved)
+- `docs/adr/`: ADR-0001…ADR-0014, all `Proposed`. They record the decisions so far: model as interpreter, Haiku minimum, decision HITL, AUTO prefix, closed VERIFY outcomes, the failure rule, BREAK×FORK, DELEGATE completion, WAIT, the Entity Model, DSL entity integration, terminology, the undecidable VERIFY, and the test method.
+- `docs/tasks/`: TASK-0001…TASK-0012, all `Todo`. They cover findings F-36…F-51, scenario fixes, the entity test, Test 3 and status conditions. `findings.md` links each finding to its task.
+- `tools/entitycheck.py`: checks entity files against their Template (fields, id format, declared status, required sections, duplicate ids). All 26 files are VALID.
