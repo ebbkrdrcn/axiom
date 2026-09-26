@@ -25,4 +25,6 @@ _Generated from the entities in this directory. Do not edit by hand._
 | [TASK-0016](TASK-0016.md) | M0: Convention and Milestone types, indexes, CONTRIBUTING and ROADMAP | Done | ADR-0021 | MS-0001 |
 | [TASK-0017](TASK-0017.md) | M1: DSL core (lexer, AST, parser, validity rules) | Done | ADR-0021 | MS-0002 |
 | [TASK-0018](TASK-0018.md) | Reconcile ADR-0001 with ADR-0021 | Todo | ADR-0021 |  |
+| [TASK-0019](TASK-0019.md) | M2a: Entity types, loading, structural validity, relations, bindings and indexes | InProgress | ADR-0021 | MS-0003 |
+| [TASK-0020](TASK-0020.md) | M2b: Preconditions and permitted changes | Todo | ADR-0021 | MS-0003 |
 <!-- axiom:generated:end -->
