@@ -4,11 +4,11 @@ Grade blind probe outputs against the DSL spec and the Entity Model.
 
 ## Inputs
 
-- Spec: `dsl-lab/iterations/NN/DSL.md` and `dsl-lab/iterations/NN/ENTITY.md`.
-- Fixture: `dsl-lab/iterations/NN/fixture/docs/`. These are the only entity files that exist.
-- Scenarios: `dsl-lab/scenarios-entity/<ID>.md`, with the task, the D-items and the pass rule.
-- Probes: `dsl-lab/iterations/NN/probes/<ID>-h{1..5}.md` (Haiku) and `<ID>-s{1,2}.md` (Sonnet).
-- Linter: `dsl-lab/iterations/NN/lint.txt`. Use it for any "Linter VALID" D-item.
+- Spec: `lab/iterations/NN/DSL.md` and `lab/iterations/NN/ENTITY.md`.
+- Fixture: `lab/iterations/NN/fixture/docs/`. These are the only entity files that exist.
+- Scenarios: `lab/scenarios-entity/<ID>.md`, with the task, the D-items and the pass rule.
+- Probes: `lab/iterations/NN/probes/<ID>-h{1..5}.md` (Haiku) and `<ID>-s{1,2}.md` (Sonnet).
+- Linter: `lab/iterations/NN/lint.txt`. Use it for any "Linter VALID" D-item.
 
 ## Rules
 

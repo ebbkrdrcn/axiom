@@ -94,7 +94,7 @@ Examples include a task and an architectural decision record (ADR).
 
 A file, a database row, an index entry, a cache entry, or an in-memory object is not the entity. Each may be a representation of the entity or a means of accessing it.
 
-For example, the file `entities/tasks/TASK-0001.md` may represent the task `TASK-0001`. The file is not the task.
+For example, the file `docs/tasks/TASK-0001.md` in a project may represent the task `TASK-0001`. The file is not the task.
 
 ---
 
@@ -545,18 +545,25 @@ In a documentation environment, the authoritative representation of an entity is
 
 ## Layout
 
-```text
-entities/
-  types/
-    <type>/
-      template.md
-      definition.md
-      representation.md
-  <collection>/
-    <identity>.md
-```
+The contracts and the instances live in different places.
 
-`entities/types/<type>/` holds the contracts of one Entity Type. `<type>` is the type name in lowercase.
+- **The contracts of each Entity Type live in axiom,** the rulebook. They are shared by every project:
+
+  ```text
+  rules/types/<type>/
+    template.md
+    definition.md
+    representation.md
+  ```
+
+  `<type>` is the type name in lowercase.
+- **The instances live in the target project,** inside its `docs/` directory. `docs/` is the project's epistemic knowledge:
+
+  ```text
+  docs/<collection>/<identity>.md
+  ```
+
+  Every path in a representation mapping is relative to the target project's root.
 
 - `template.md` represents the Template.
 - `definition.md` represents the Definition.
@@ -597,7 +604,7 @@ The file name `<identity>.md` is a convention that makes an entity easy to find.
 
 ## Task Template
 
-`entities/types/task/template.md`:
+`rules/types/task/template.md`:
 
 ```markdown
 # Task Template
@@ -628,7 +635,7 @@ The file name `<identity>.md` is a convention that makes an entity easy to find.
 
 ## Task Definition
 
-`entities/types/task/definition.md`:
+`rules/types/task/definition.md`:
 
 ```markdown
 # Task Definition

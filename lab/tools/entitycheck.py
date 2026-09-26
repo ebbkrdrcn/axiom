@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """entitycheck: structural validity of entity files against their Template.
 
-usage: entitycheck.py FILE...   (reads entities/types/<type>/template.md and definition.md)
+usage: entitycheck.py FILE...   (reads rules/types/<type>/template.md and definition.md)
 Checks: required fields present, id format, type, status declared, required sections present,
 duplicate ids across the given files. Exit code 0 if all valid.
 """
@@ -33,7 +33,7 @@ def check(path):
     if fm is None:
         return ["no front matter"], None
     t = fm.get("type", "")
-    tdir = os.path.join(ROOT, "entities", "types", t.lower())
+    tdir = os.path.join(ROOT, "rules", "types", t.lower())
     if not t or not os.path.isdir(tdir):
         return [f"unknown type {t!r}"], fm.get("id")
     tpl = open(os.path.join(tdir, "template.md")).read()

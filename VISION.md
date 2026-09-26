@@ -90,8 +90,8 @@ every node is responsible for its subtree.
 
 | Topic | Location |
 |---|---|
-| The DSL | `dsl.md` |
-| The Entity Model | `entity-model.md` |
-| Decisions | `entities/adr/`, in particular ADR-0015 … ADR-0019 |
-| Current state and next steps | `dsl-lab/STATUS.md`, `dsl-lab/NEXT.md` |
-| Test method and results | `dsl-lab/` |
+| The DSL | `spec/dsl.md` |
+| The Entity Model | `spec/entity-model.md` |
+| Decisions | `docs/adr/`, in particular ADR-0015 … ADR-0021 |
+| Current state and next steps | `lab/STATUS.md`, `lab/NEXT.md` |
+| Test method and results | `lab/` |

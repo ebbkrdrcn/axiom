@@ -4,12 +4,12 @@ You grade blind probe outputs against a DSL spec.
 
 ## Inputs
 
-- The spec the probes saw: `dsl-lab/iterations/NN/DSL.md`
-- For each assigned scenario: `dsl-lab/scenarios/<ID>.md`, which contains the task, the expected D-items and the pass rule.
+- The spec the probes saw: `lab/iterations/NN/DSL.md`
+- For each assigned scenario: `lab/scenarios/<ID>.md`, which contains the task, the expected D-items and the pass rule.
 - The probe outputs:
-  - `dsl-lab/iterations/NN/probes/<ID>-s{1,2,3}.md` (sonnet)
-  - `dsl-lab/iterations/NN/probes/<ID>-h{1,2,3}.md` (haiku)
-- The deterministic linter results: `dsl-lab/iterations/NN/lint.txt`. It lists VALID or INVALID for every DSL code block in the probe outputs. **Use the linter result for any D-item that says "Linter VALID"; do not re-judge syntax yourself.**
+  - `lab/iterations/NN/probes/<ID>-s{1,2,3}.md` (sonnet)
+  - `lab/iterations/NN/probes/<ID>-h{1,2,3}.md` (haiku)
+- The deterministic linter results: `lab/iterations/NN/lint.txt`. It lists VALID or INVALID for every DSL code block in the probe outputs. **Use the linter result for any D-item that says "Linter VALID"; do not re-judge syntax yourself.**
 
 ## For each scenario
 
