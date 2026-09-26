@@ -37,6 +37,10 @@ Last stop: 2026-09-26. Test 3 stopped part way at the owner's request because of
   - The test corpus becomes a model qualification exam: model × capability → pass rate, DANGER count and cost; a role needs the threshold and 0 DANGER.
   - Record the corpus, spec and tool-layer versions with every result, and keep a hold-out set.
 
+- **ADR-0020:**
+  - Entities moved from `docs/` to `entities/` (types, adr, tasks). `docs/` is now only project documentation.
+  - Maintenance mode is a protocol the system runs on its own ledger and test data: observe → diagnose → propose → verify against the corpus → ASK the owning role → apply. Incidents become corpus scenarios.
+
 ## Open questions for the owner
 
 1. May a node rephrase a question it passes upward? If so, the entity identity must survive.

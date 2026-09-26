@@ -5,7 +5,7 @@
 | Item | State |
 |---|---|
 | Spec | `dsl.md` DSL v3, and `entity-model.md` |
-| Entities | Task and ADR types are in `docs/types/`. The project's own ADR-0001…0014 are Proposed. TASK-0001…0009 and 0011 are InProgress; the rest are Todo. |
+| Entities | Task and ADR types are in `entities/types/`. The project's own ADR-0001…0014 are Proposed. TASK-0001…0009 and 0011 are InProgress; the rest are Todo. |
 | Tools | `tools/dslcheck.py` (V1–V12), `tools/entitycheck.py`, `tools/lint_outputs.py`, `tools/CRITIC-v2.md`, `tools/CRITIC-E.md` |
 | Findings | F-01…F-63 in `findings.md`. F-61…F-63 are open for v4. |
 
