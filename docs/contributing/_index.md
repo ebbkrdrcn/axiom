@@ -19,4 +19,5 @@ _Generated from the entities in this directory. Do not edit by hand._
 | [CONV-0010](CONV-0010.md) | Commit messages start with a short imperative summary line | Active | all | review |  |
 | [CONV-0011](CONV-0011.md) | A Task moves to Done only after an independent review by an agent that did not do the work | Active | docs/tasks/ | review | ADR-0021 |
 | [CONV-0012](CONV-0012.md) | The test suite passes before a change is merged to `main` | Active | runtime/, tests/ | mechanical | ADR-0021 |
+| [CONV-0013](CONV-0013.md) | Every Task is developed on its own branch | Proposed | all | review |  |
 <!-- axiom:generated:end -->
