@@ -1,0 +1,18 @@
+[project]
+name = "axiom"
+version = "0.1.0"
+description = "A stateless rulebook and interpreter for DSL protocols"
+requires-python = ">=3.11"
+
+[project.scripts]
+axiom = "axiom.cli:main_entry"
+
+[tool.setuptools.packages.find]
+where = ["runtime"]
+
+[tool.pytest.ini_options]
+pythonpath = ["runtime"]
+testpaths = ["tests"]
+
+[tool.mypy]
+strict = true
