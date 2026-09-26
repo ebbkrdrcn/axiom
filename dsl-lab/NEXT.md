@@ -24,6 +24,13 @@ Last stop: 2026-09-26. Test 3 stopped part way at the owner's request because of
 - **Context (ADR-0017).** Graphify builds actor context. Decisions use only `EXTRACTED` edges. A vector DB is deferred.
 - **Consequence for testing.** Actors may run on small models, so execution determinism (the Haiku DANGER errors) matters again. Revisit the "target model = Sonnet" decision with the owner.
 
+- **ADR-0018:**
+  - The small human team is architect, security and DevOps; business forms the intents.
+  - **Uncertainty = epistemic (missing knowledge).** Reasoning decides only what follows from held knowledge; everything else becomes an ASK. This gives `AUTO`'s "certain" a precise meaning.
+  - An incomplete intent loops through ASK until the spec has no open questions.
+  - Humans learn to write intents, with a template, feedback and metrics.
+  - ASK targets roles: `@business`, `@architect`, `@security`, `@devops`.
+
 ## Open questions for the owner
 
 1. May a node rephrase a question it passes upward? If so, the entity identity must survive.
