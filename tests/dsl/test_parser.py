@@ -57,6 +57,7 @@ def test_children_and_arrows() -> None:
 
 def test_keywords_are_accepted_as_names() -> None:
     assert only("DELEGATE STOP") == n.Delegate(line=1, column=1, work="STOP")
+    assert only("LOOP:Task = TASK-0001") == n.Binding(line=1, column=1, name="LOOP", type="Task", target="TASK-0001")
 
 
 @pytest.mark.parametrize(

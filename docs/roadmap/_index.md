@@ -17,8 +17,8 @@ _Generated from the entities in this directory. Do not edit by hand._
 | ID | Title | Status | Code | Requires | Tasks done |
 |---|---|---|---|---|---|
 | [MS-0001](MS-0001.md) | M0: Foundations | Done | M0 |  | 2/2 |
-| [MS-0002](MS-0002.md) | M1: DSL core in `runtime/axiom/dsl/` | Active | M1 | MS-0001 | 0/1 |
-| [MS-0003](MS-0003.md) | M2: Entity core in `runtime/axiom/entities/` | Planned | M2 | MS-0002 |  |
+| [MS-0002](MS-0002.md) | M1: DSL core in `runtime/axiom/dsl/` | Done | M1 | MS-0001 | 1/1 |
+| [MS-0003](MS-0003.md) | M2: Entity core in `runtime/axiom/entities/` | Active | M2 | MS-0002 |  |
 | [MS-0004](MS-0004.md) | M3: Interpreter | Planned | M3 | MS-0003 |  |
 | [MS-0005](MS-0005.md) | M4: MCP server, CLI, `AGENT.md` and hooks | Planned | M4 | MS-0004 |  |
 | [MS-0006](MS-0006.md) | M5: First real run | Planned | M5 | MS-0005 |  |

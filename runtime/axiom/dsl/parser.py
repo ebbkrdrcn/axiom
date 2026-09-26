@@ -41,8 +41,8 @@ class LineReader:
         self._pos = 0
         self.error: tuple[IssueKind, str] | None = None
 
-    def peek(self) -> Token:
-        return self._tokens[self._pos]
+    def peek(self, ahead: int = 0) -> Token:
+        return self._tokens[min(self._pos + ahead, len(self._tokens) - 1)]
 
     def next(self) -> Token:
         token = self._tokens[self._pos]
@@ -145,6 +145,8 @@ class Parser:
             reader.next()
         first = reader.peek()
         method = self._statements.get(first.kind)
+        if self._is_binding(reader):
+            method = self._binding
         node = method(reader, start, arrow) if method else None
         if method is None:
             reader.fail("unrecognised statement")
@@ -154,6 +156,11 @@ class Parser:
             self.issues.append(SyntaxIssue(start.line, start.column, kind, f"{message}: {source!r}"))
             return n.Invalid(line=start.line, column=start.column, arrow=arrow, source=source)
         return node
+
+    @staticmethod
+    def _is_binding(r: LineReader) -> bool:
+        """`<name>:<Type> = …`; the name may be a keyword, for example `LOOP:Task = TASK-1`."""
+        return r.peek().is_word and r.peek(1).kind is TokenKind.COLON and r.peek(3).kind is TokenKind.EQUALS
 
     # --- statements -------------------------------------------------------------------------------
 
