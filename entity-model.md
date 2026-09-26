@@ -94,7 +94,7 @@ Examples include a task and an architectural decision record (ADR).
 
 A file, a database row, an index entry, a cache entry, or an in-memory object is not the entity. Each may be a representation of the entity or a means of accessing it.
 
-For example, the file `docs/tasks/TASK-0001.md` may represent the task `TASK-0001`. The file is not the task.
+For example, the file `entities/tasks/TASK-0001.md` may represent the task `TASK-0001`. The file is not the task.
 
 ---
 
@@ -546,7 +546,7 @@ In a documentation environment, the authoritative representation of an entity is
 ## Layout
 
 ```text
-docs/
+entities/
   types/
     <type>/
       template.md
@@ -556,7 +556,7 @@ docs/
     <identity>.md
 ```
 
-`docs/types/<type>/` holds the contracts of one Entity Type. `<type>` is the type name in lowercase.
+`entities/types/<type>/` holds the contracts of one Entity Type. `<type>` is the type name in lowercase.
 
 - `template.md` represents the Template.
 - `definition.md` represents the Definition.
@@ -597,7 +597,7 @@ The file name `<identity>.md` is a convention that makes an entity easy to find.
 
 ## Task Template
 
-`docs/types/task/template.md`:
+`entities/types/task/template.md`:
 
 ```markdown
 # Task Template
@@ -628,7 +628,7 @@ The file name `<identity>.md` is a convention that makes an entity easy to find.
 
 ## Task Definition
 
-`docs/types/task/definition.md`:
+`entities/types/task/definition.md`:
 
 ```markdown
 # Task Definition
