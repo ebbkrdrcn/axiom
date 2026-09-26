@@ -11,6 +11,7 @@ Axiom is a stateless **rulebook and interpreter** (ADR-0021).
 | Directory | Contents |
 |---|---|
 | [`VISION.md`](VISION.md) | the vision |
+| [`ROADMAP.md`](ROADMAP.md) | the milestones M0–M6 |
 | [`spec/`](spec/) | the DSL (`dsl.md`) and the Entity Model (`entity-model.md`) |
 | [`rules/`](rules/) | entity types, protocols and actor definitions: the source of truth |
 | [`runtime/`](runtime/) | the interpreter, MCP server and CLI (not built yet) |

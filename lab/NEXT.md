@@ -14,7 +14,7 @@ Last stop: 2026-09-26. Everything is merged to `main`.
   - Content is requested by name through MCP.
   - `axiom project start <path>` leaves a small `AGENT.md` in the project.
 - **Repository layout:** `spec/`, `rules/` (types, protocols, actors), `runtime/`, `templates/`, `tests/`, `lab/` and `docs/` (axiom's own ADRs and Tasks). TASK-0013 applies this layout.
-- **Next:** write the roadmap with the owner, then start the runtime: parser, interpreter core with the lab traces as golden tests, MCP, `project start` and `AGENT.md`.
+- **Next:** follow `ROADMAP.md`. M0 is TASK-0016 (Convention type, `_index.md` files, CONTRIBUTING). M1 is TASK-0017 (DSL core). Entity writes go through axiom MCP, which also updates the indexes (ADR-0021). Until MCP exists, a temporary script generates the indexes.
 
 ## Read first
 
