@@ -27,6 +27,6 @@ _Generated from the entities in this directory. Do not edit by hand._
 | [ADR-0018](ADR-0018.md) | Intent-driven development: a small human team, and uncertainty defined as missing knowledge | Proposed | 2026-09-26 |  | 0/1 |
 | [ADR-0019](ADR-0019.md) | Observe first, build later; a central runtime as the target; the test corpus as a model qualification exam | Proposed | 2026-09-26 |  |  |
 | [ADR-0020](ADR-0020.md) | A maintenance mode closes the improvement loop | Proposed | 2026-09-26 |  |  |
-| [ADR-0021](ADR-0021.md) | Axiom is a stateless rulebook and interpreter; work happens in the target project | Proposed | 2026-09-26 | 11 | 3/5 |
+| [ADR-0021](ADR-0021.md) | Axiom is a stateless rulebook and interpreter; work happens in the target project | Proposed | 2026-09-26 | 11 | 4/5 |
 | [ADR-0022](ADR-0022.md) | Protocols take entities as inputs: `INPUT <name>:<Type>` | Proposed | 2026-09-26 |  |  |
 <!-- axiom:generated:end -->

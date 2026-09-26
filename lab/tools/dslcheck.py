@@ -97,8 +97,9 @@ def parse(src):
         else:
             kind, attrs = parse_stmt(text)
             if kind is None:
+                # keep the unreadable line as an opaque parent: its children stay under it (Indentation rule 2)
                 errors.append(f"line {i}: {attrs}")
-                continue
+                kind, attrs = "INVALID", {}
             node = Node(kind, i, indent, arrow=arrow, **attrs)
         while stack[-1].indent >= indent:
             stack.pop()
@@ -124,13 +125,15 @@ def walk(n):
 
 def check_structure(n, errors):
     """V1 / V4 / V8 / V9: which children each node may have."""
-    kids = n.children
+    kids = [c for c in n.children if c.kind != "INVALID"]
     items = [c for c in kids if c.arrow and c.kind != "FALLBACK"]
     fallbacks = [c for c in kids if c.kind == "FALLBACK"]
     plain = [c for c in kids if not c.arrow]
     k = n.kind
     loc = f"line {n.line_no}"
-    if k in ("PROGRAM", "LOOP"):
+    if k == "INVALID":
+        pass  # already reported; its children are judged on their own
+    elif k in ("PROGRAM", "LOOP"):
         for c in kids:
             if c.arrow:
                 errors.append(f"line {c.line_no}: V4: '→' item not under WHEN, FORK or FALLBACK")
@@ -145,18 +148,21 @@ def check_structure(n, errors):
         if len(items) < 2:
             errors.append(f"{loc}: V9: FORK has fewer than two branches")
     elif k in FALLBACK_HOSTS:
-        if plain or items:
-            errors.append(f"{loc}: V1/V4: {k} may only contain '→ FALLBACK'")
+        if plain:
+            errors.append(f"{loc}: V1: {k} may only contain '→ FALLBACK'")
+        if items:
+            errors.append(f"{loc}: V4: {k} may only contain '→ FALLBACK'")
         if len(fallbacks) > 1:
             errors.append(f"{loc}: V4: {k} has more than one FALLBACK")
     elif k == "FALLBACK":
-        if n.parent.kind not in FALLBACK_HOSTS:
+        if n.parent.kind not in FALLBACK_HOSTS and n.parent.kind != "INVALID":
             errors.append(f"{loc}: V4: '→ FALLBACK' not directly under HITL, REQUIRE, VERIFY or TRANSITION <name>")
         if not items or plain or fallbacks:
             errors.append(f"{loc}: V1: FALLBACK must contain only '→' items (at least one)")
         else:
             last = items[-1]
-            last_stmt = last.children[-1] if (last.children and last.kind not in COMPOUND) else last
+            cont = [c for c in last.children if c.kind != "INVALID"]
+            last_stmt = cont[-1] if (cont and last.kind not in COMPOUND) else last
             if last_stmt.kind not in ("STOP", "BREAK"):
                 errors.append(f"{loc}: V8: fallback flow does not end with STOP or BREAK")
     else:
@@ -166,9 +172,9 @@ def check_structure(n, errors):
         for c in kids:
             if n.arrow and c.arrow:
                 errors.append(f"line {c.line_no}: V4: '→' item not under WHEN, FORK or FALLBACK")
-    if n.arrow and n.kind != "FALLBACK" and n.parent.kind not in ("WHEN", "FORK", "FALLBACK"):
+    if n.arrow and n.kind not in ("FALLBACK", "INVALID") and n.parent.kind not in ("WHEN", "FORK", "FALLBACK", "INVALID"):
         errors.append(f"{loc}: V4: '→' item not under WHEN, FORK or FALLBACK")
-    for c in kids:
+    for c in n.children:
         check_structure(c, errors)
 
 
@@ -181,7 +187,7 @@ def branch_of(n):
 
 
 def check_semantics(root, errors):
-    nodes = list(walk(root))
+    nodes = [x for x in walk(root) if x.kind != "INVALID"]
     verify = {n.arg for n in nodes if n.kind == "VERIFY"}
     hitls = [n for n in nodes if n.kind == "HITL" and n.name]
     names = {}
@@ -229,7 +235,7 @@ def check_semantics(root, errors):
             if loop is None:
                 errors.append(f"line {n.line_no}: V2: BREAK is not inside a LOOP")
             else:
-                for a in ancestors(n):
+                for a in [n, *ancestors(n)]:
                     if a is loop:
                         break
                     if a.arrow and a.parent is not None and a.parent.kind == "FORK":
@@ -241,7 +247,7 @@ def check_semantics(root, errors):
             if not ok:
                 errors.append(f"line {n.line_no}: V6: WHEN {s}.{o} refers to an outcome the program cannot produce")
         if n.kind == "JOIN" or n.kind == "WHEN":
-            sib = n.parent.children
+            sib = [x for x in n.parent.children if x.kind != "INVALID"]
             idx = sib.index(n)
             open_forks = []
             for x in sib[:idx]:

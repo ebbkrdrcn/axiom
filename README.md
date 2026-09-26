@@ -15,8 +15,8 @@ Axiom is a stateless **rulebook and interpreter** (ADR-0021).
 | [`CONTRIBUTING.md`](CONTRIBUTING.md) | points to the conventions: Convention entities in `docs/contributing/` |
 | [`spec/`](spec/) | the DSL (`dsl.md`) and the Entity Model (`entity-model.md`) |
 | [`rules/`](rules/) | entity types, protocols and actor definitions: the source of truth |
-| [`runtime/`](runtime/) | the interpreter, MCP server and CLI (not built yet) |
+| [`runtime/`](runtime/) | the axiom package: the DSL core and `axiom check` (M1); interpreter, entities and MCP server to come |
 | [`templates/`](templates/) | the `AGENT.md` template and the `docs/` skeleton (not built yet) |
-| [`tests/`](tests/) | runtime tests (not built yet) |
+| [`tests/`](tests/) | runtime tests: `python3 -m pytest` |
 | [`lab/`](lab/) | the test corpus, tools, findings, [status](lab/STATUS.md) and [next steps](lab/NEXT.md) |
 | [`docs/`](docs/_index.md) | axiom's own knowledge: ADRs, Tasks, conventions and the roadmap. Start at `docs/_index.md` |
