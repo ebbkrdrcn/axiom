@@ -3,7 +3,7 @@
 Type: execution trace · Edge cases: WHEN is not a standing trigger; TRANSITION overwrite
 
 ## Task
-Consider this go_harness DSL:
+Consider this DSL:
 ```text
 TRANSITION "Testing"
 WHEN tests.accepted

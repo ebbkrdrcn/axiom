@@ -3,7 +3,7 @@
 Type: interpretation · Edge cases: WHEN with no matching outcome, LOOP repetition
 
 ## Task
-Consider this go_harness DSL:
+Consider this DSL:
 ```text
 LOOP:build
   DELEGATE build

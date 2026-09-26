@@ -3,7 +3,7 @@
 Type: interpretation · Edge cases: invalid construct (WHEN inside AUTO), BREAK scope
 
 ## Task
-For each of the following go_harness DSL snippets, answer VALID or INVALID, cite the rule from the specification, and explain what is wrong or what would happen.
+For each of the following DSL snippets, answer VALID or INVALID, cite the rule from the specification, and explain what is wrong or what would happen.
 
 Snippet A:
 ```text

@@ -3,7 +3,7 @@
 Type: authoring · Edge cases: multi-line branch scope after →, FORK/JOIN placement
 
 ## Task
-Write go_harness DSL for the following requirement:
+Write DSL for the following requirement:
 
 "Run a security review and a performance review in parallel. Each review is delegated and then verified within its own parallel flow. Continue only after both flows have finished, then transition to state "Release"."
 

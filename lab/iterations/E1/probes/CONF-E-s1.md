@@ -1,4 +1,4 @@
-# Ambiguities, contradictions, and gaps in go_harness's Entity rules
+# Ambiguities, contradictions, and gaps in DSL's Entity rules
 
 Scope: the **Entities** section of `dsl.md`, all of `entity-model.md`, and the fixture contracts under `docs/types`. Ordered high → low risk.
 

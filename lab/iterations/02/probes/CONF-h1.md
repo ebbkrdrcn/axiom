@@ -1,4 +1,4 @@
-# Ambiguities and Underspecifications in go_harness DSL
+# Ambiguities and Underspecifications in DSL
 
 ## Critical Issues (High Risk of Wrong Execution)
 

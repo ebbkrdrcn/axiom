@@ -3,7 +3,7 @@
 Type: authoring · Edge cases: when FALLBACK triggers, multi-line flow after →, REQUIRE
 
 ## Task
-Write go_harness DSL for the following requirement:
+Write DSL for the following requirement:
 
 "The process needs the deployment-target before anything else. Then ask a human "Which region should we deploy to?". If no usable answer is obtained from the human, transition to state "Blocked" and terminate the whole execution. Otherwise, delegate the deployment and emit a deployment-log."
 

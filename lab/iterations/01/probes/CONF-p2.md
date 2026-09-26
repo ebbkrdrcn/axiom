@@ -1,4 +1,4 @@
-# Ambiguities, Contradictions, and Underspecifications in the go_harness DSL Spec
+# Ambiguities, Contradictions, and Underspecifications in the DSL Spec
 
 Ordered from most likely to cause a wrong process or wrong execution to least likely. Each item cites the section, quotes the relevant text, explains the problem, and gives two divergent readings.
 

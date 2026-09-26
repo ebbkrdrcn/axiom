@@ -3,7 +3,7 @@
 Type: execution trace · Edge cases: FORK branch fails, JOIN, more than one WHEN satisfied
 
 ## Task
-Consider this go_harness DSL:
+Consider this DSL:
 ```text
 FORK
   → DELEGATE unit-tests

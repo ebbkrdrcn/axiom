@@ -3,7 +3,7 @@
 Type: execution trace · Edge cases: FORK without JOIN (F-12), DELEGATE completion (F-16)
 
 ## Task
-Consider this go_harness DSL:
+Consider this DSL:
 ```text
 DELEGATE design
 DELEGATE implementation

@@ -3,7 +3,7 @@
 Type: interpretation · Edge cases: scope of multi-line flows after →
 
 ## Task
-Consider this go_harness DSL:
+Consider this DSL:
 ```text
 VERIFY review
 WHEN review.rejected

@@ -3,7 +3,7 @@
 Type: authoring · Edge cases: VERIFY outcome names in WHEN, BREAK, scope
 
 ## Task
-Write go_harness DSL for the following requirement:
+Write DSL for the following requirement:
 
 "Repeatedly: delegate the implementation, then verify it. If the verification accepts it, leave the repetition. If the verification rejects it, delegate a correction and then repeat from the start. After the repetition ends, emit source-code."
 

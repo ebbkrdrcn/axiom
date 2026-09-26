@@ -1,7 +1,7 @@
 # X04 — Trace: AUTO, decision uncertain, human does not respond
 
 ## Task
-Consider this go_harness DSL:
+Consider this DSL:
 ```text
 DELEGATE dependency-upgrade
 VERIFY dependency-upgrade

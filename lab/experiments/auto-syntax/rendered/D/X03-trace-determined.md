@@ -1,7 +1,7 @@
 # X03 — Trace: AUTO, decision sufficiently determined
 
 ## Task
-Consider this go_harness DSL:
+Consider this DSL:
 ```text
 DELEGATE dependency-upgrade
 VERIFY dependency-upgrade

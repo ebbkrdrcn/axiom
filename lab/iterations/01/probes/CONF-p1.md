@@ -1,4 +1,4 @@
-# Ambiguities, Contradictions, and Underspecifications in the `go_harness` DSL
+# Ambiguities, Contradictions, and Underspecifications in the `DSL` DSL
 
 Ordered from most to least likely to cause a wrong process definition or wrong execution.
 

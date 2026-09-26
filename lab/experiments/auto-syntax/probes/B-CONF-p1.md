@@ -1,4 +1,4 @@
-# Ambiguities in `go_harness` — HITL / AUTO / FALLBACK / WHEN
+# Ambiguities in `DSL` — HITL / AUTO / FALLBACK / WHEN
 
 Method: I read the spec as an implementer who must execute programs written in it, focusing on how `HITL`, `AUTO`, and `FALLBACK` interact with `WHEN`. Below is every place I found unclear, contradictory, or underspecified, with the section it comes from, the exact text, the problem, and two divergent readings.
 

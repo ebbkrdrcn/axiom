@@ -1,7 +1,7 @@
 # X02 — Authoring: two decisions, only one auto-resolvable (scope)
 
 ## Task
-Write go_harness DSL for the following requirement:
+Write DSL for the following requirement:
 
 "First ask a human "Short or detailed release notes?". The agent may answer this question itself when the answer is clearly determined. If short, delegate short-notes; if detailed, delegate detailed-notes. Then ask a human "Approve the release?". This approval must always be given by a human, never by the agent. If approved, emit release; if rejected, transition to state "Rework"."
 

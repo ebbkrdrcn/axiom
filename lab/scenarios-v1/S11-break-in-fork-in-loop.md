@@ -3,7 +3,7 @@
 Type: execution trace · Edge cases: BREAK inside FORK inside LOOP
 
 ## Task
-Consider this go_harness DSL:
+Consider this DSL:
 ```text
 LOOP:review
   FORK

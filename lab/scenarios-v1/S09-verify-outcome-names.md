@@ -3,7 +3,7 @@
 Type: interpretation · Edge cases: VERIFY outcome names (passed/accepted/…) in WHEN
 
 ## Task
-Consider this go_harness DSL:
+Consider this DSL:
 ```text
 DELEGATE implementation
 VERIFY implementation

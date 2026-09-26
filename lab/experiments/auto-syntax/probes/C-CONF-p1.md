@@ -1,4 +1,4 @@
-# Ambiguities and gaps in `go_harness`, focused on HITL / AUTO / FALLBACK / WHEN
+# Ambiguities and gaps in `DSL`, focused on HITL / AUTO / FALLBACK / WHEN
 
 Method note: I used only the text of the specification. Where a question turns
 on how two passages relate to each other, I quote both. Where the spec is

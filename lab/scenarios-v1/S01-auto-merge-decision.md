@@ -3,7 +3,7 @@
 Type: authoring · Edge cases: AUTO syntax, AUTO↔HITL binding
 
 ## Task
-Write go_harness DSL for the following requirement:
+Write DSL for the following requirement:
 
 "Delegate the implementation and verify it. Then a merge decision is needed: the agent may make the merge decision itself when the decision is clearly determined by the available information and criteria; otherwise a human must be asked "Merge this change?". If the decision is to merge, transition to state "Merged". If the decision is not to merge, transition to state "Rework"."
 
