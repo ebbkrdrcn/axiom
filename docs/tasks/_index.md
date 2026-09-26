@@ -21,7 +21,8 @@ _Generated from the entities in this directory. Do not edit by hand._
 | [TASK-0012](TASK-0012.md) | Entity Model: define status conditions | Todo | ADR-0010 |  |
 | [TASK-0013](TASK-0013.md) | Restructure the repository into the axiom layout | Done | ADR-0021 |  |
 | [TASK-0014](TASK-0014.md) | Task Definition: split Review → Done into technical verification and intent acceptance | Todo | ADR-0018 | MS-0007 |
-| [TASK-0015](TASK-0015.md) | Remove the legacy product name: the language is simply "the DSL" | InProgress | ADR-0021 | MS-0001 |
+| [TASK-0015](TASK-0015.md) | Remove the legacy product name: the language is simply "the DSL" | Done | ADR-0021 | MS-0001 |
 | [TASK-0016](TASK-0016.md) | M0: Convention and Milestone types, indexes, CONTRIBUTING and ROADMAP | InProgress | ADR-0021 | MS-0001 |
 | [TASK-0017](TASK-0017.md) | M1: DSL core (lexer, AST, parser, validity rules) | Todo | ADR-0021 | MS-0002 |
+| [TASK-0018](TASK-0018.md) | Reconcile ADR-0001 with ADR-0021 | Todo | ADR-0021 |  |
 <!-- axiom:generated:end -->
