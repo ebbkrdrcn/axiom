@@ -31,6 +31,12 @@ Last stop: 2026-09-26. Test 3 stopped part way at the owner's request because of
   - Humans learn to write intents, with a template, feedback and metrics.
   - ASK targets roles: `@business`, `@architect`, `@security`, `@devops`.
 
+- **ADR-0019:**
+  - Strategy: observe first, concepts before implementation. Invest in stable parts (concepts, protocols, corpus, ADRs) and keep temporary tooling minimal.
+  - Target: a central, issue-tracker-like runtime. ASKs are answered in its UI. Temporal may provide durable execution.
+  - The test corpus becomes a model qualification exam: model × capability → pass rate, DANGER count and cost; a role needs the threshold and 0 DANGER.
+  - Record the corpus, spec and tool-layer versions with every result, and keep a hold-out set.
+
 ## Open questions for the owner
 
 1. May a node rephrase a question it passes upward? If so, the entity identity must survive.
