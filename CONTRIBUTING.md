@@ -4,5 +4,5 @@ Contributions follow the conventions in [`docs/contributing/`](docs/contributing
 
 Before a change is merged:
 
-- `python3 lab/tools/entitycheck.py --all docs` passes.
+- `axiom entities check docs` passes. Regenerate the indexes with `axiom index docs`.
 - An independent reviewer, who did not do the work, checks the change against the Active conventions in its scope.
