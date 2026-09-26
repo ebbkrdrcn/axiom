@@ -1,5 +1,8 @@
 # docs
 
-Documentation about this project: architecture notes, guides and references.
+Axiom's own epistemic knowledge, used when axiom develops itself (ADR-0021).
 
-Entities (ADRs, Tasks and their types) live in [`../entities/`](../entities/), not here.
+- `adr/`: ADR instances (`ADR-NNNN.md`).
+- `tasks/`: Task instances (`TASK-NNNN.md`).
+
+The contracts of these types live in `../rules/types/`.

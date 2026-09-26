@@ -1,6 +1,20 @@
 # Resume note (for the next session)
 
-Last stop: 2026-09-26. Test 3 stopped part way at the owner's request because of usage limits. Everything is merged to `main`.
+Last stop: 2026-09-26. Everything is merged to `main`.
+
+## Current direction (owner-approved, 2026-09-26)
+
+- **The syntax is sufficient for now.** Lab tests continue later, when usage limits allow.
+- **The focus now is turning axiom into a usable tool** (ADR-0021).
+- **Axiom is a stateless rulebook and interpreter.**
+  - The work happens in the target project.
+  - The project's `docs/` is its knowledge.
+  - Execution state lives in the project's `.axiom/`.
+  - Paths are relative to the project root.
+  - Content is requested by name through MCP.
+  - `axiom project start <path>` leaves a small `AGENT.md` in the project.
+- **Repository layout:** `spec/`, `rules/` (types, protocols, actors), `runtime/`, `templates/`, `tests/`, `lab/` and `docs/` (axiom's own ADRs and Tasks). TASK-0013 applies this layout.
+- **Next:** write the roadmap with the owner, then start the runtime: parser, interpreter core with the lab traces as golden tests, MCP, `project start` and `AGENT.md`.
 
 ## Read first
 
@@ -37,8 +51,8 @@ Last stop: 2026-09-26. Test 3 stopped part way at the owner's request because of
   - The test corpus becomes a model qualification exam: model × capability → pass rate, DANGER count and cost; a role needs the threshold and 0 DANGER.
   - Record the corpus, spec and tool-layer versions with every result, and keep a hold-out set.
 
+- **ADR-0021:** axiom is a rulebook and interpreter; the layout is described above.
 - **ADR-0020:**
-  - Entities moved from `docs/` to `entities/` (types, adr, tasks). `docs/` is now only project documentation.
   - Maintenance mode is a protocol the system runs on its own ledger and test data: observe → diagnose → propose → verify against the corpus → ASK the owning role → apply. Incidents become corpus scenarios.
 
 ## Open questions for the owner
@@ -48,16 +62,16 @@ Last stop: 2026-09-26. Test 3 stopped part way at the owner's request because of
 3. How does `DELEGATE` name an Actor? Can a protocol call another protocol? Are protocols an approved library, or written per task?
 4. Do actors run as Claude Code subagents or as separate sessions?
 
-## Next steps. Report to the owner in Turkish and wait for approval before and after each test.
+## Lab next steps (paused until limits allow). Report to the owner in Turkish and wait for approval before and after each test.
 
-1. **DSL v4.** Change `dsl.md`, and `entity-model.md` if needed. Include the `HITL` → `ASK` rename (ADR-0016) once the owner approves it:
+1. **DSL v4.** Change `spec/dsl.md`, and `spec/entity-model.md` if needed. Include the `HITL` → `ASK` rename (ADR-0016) once the owner approves it:
    - **F-61, binding:** "List every file whose `id` equals the identity. Count them. If the count is not exactly 1, the binding is not satisfied."
    - **F-62, `verified:`:** "Before a TRANSITION with `verified:`, list every statement since that VERIFY that changed this entity. If the list is not empty, the precondition does not hold." Add an example.
    - **F-63, authoring:** "A FALLBACK does only what the requirement says to do on failure. It never transitions an entity and never stands in for a human answer."
-   - Keep the spec short and do not grow it. Check it with `python3 tools/dslcheck.py --md ../dsl.md`.
+   - Keep the spec short and do not grow it. Check it with `python3 lab/tools/dslcheck.py --md spec/dsl.md`.
 2. **Small validation test (Sonnet only).** Run E03, N06, E11, N09 and S01 with 2 Sonnet probes each: 10 probes and 1 critic, 11 subagents in total. Build inputs the same way as in `iterations/03`: DSL.md + ENTITY.md + fixture, with the task at the end.
 3. **Optional wider regression.** Run the 34 scenarios that have not run yet (S02–S21, ST01–ST08, X01–X06) with 1 Sonnet probe each: 34 probes and 2 critics.
-4. **Tools.** Add mechanical checks for binding count, stale `verified:` and TRANSITION preconditions, for example an extension of `tools/entitycheck.py`.
+4. **Tools.** Add mechanical checks for binding count, stale `verified:` and TRANSITION preconditions, for example inside the runtime (ADR-0021).
 5. **Docs.** Once verified, TASK-0001…0009 and 0011 can move to Review. Done needs human approval. The ADRs await owner approval.
 
 ## Practical notes

@@ -2,9 +2,9 @@
 
 You are the CRITIC in a spec-improvement loop for a DSL specification.
 Inputs (read them from disk):
-- The spec the probes saw: `dsl-lab/iterations/NN/DSL.md`
-- For each assigned scenario `Sxx`: `dsl-lab/scenarios/Sxx-*.md` (task + expected behaviour + pass rule)
-- Probe outputs: `dsl-lab/iterations/NN/probes/Sxx-p1.md`, `-p2.md`, `-p3.md`
+- The spec the probes saw: `lab/iterations/NN/DSL.md`
+- For each assigned scenario `Sxx`: `lab/scenarios/Sxx-*.md` (task + expected behaviour + pass rule)
+- Probe outputs: `lab/iterations/NN/probes/Sxx-p1.md`, `-p2.md`, `-p3.md`
 
 The expected behaviour lists **D-items** (determined by the spec — required for PASS) and
 **U-items** (underdetermined by the spec). Grade strictly against the D-items and the pass rule.
