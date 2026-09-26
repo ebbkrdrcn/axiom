@@ -119,3 +119,22 @@ Implements TASK-0001…0009 and E1 findings F-52…F-60:
 - **Task Definition:** delegated work may edit Acceptance Criteria only in Todo, InProgress or Debugging.
 - **Scenarios:** S05 now asks for every rule, S21 asks for the verdict, and E11 D5 was relaxed. Added N01–N10 (`scenarios-hard/`).
 - **Tasks:** TASK-0001…0009 and TASK-0011 moved to InProgress.
+
+## Test 3 (2026-09-26, partial, stopped by owner)
+
+- **Probed:** DSL v3.
+- **Ran:** 163 of 366 probes.
+- **Graded:** E01–E12, N01–N10 and S01, each with 5 Haiku probes and 2 Sonnet probes.
+- **Sonnet:** 23/23 scenarios, 215/215 D-items.
+- **Haiku:** 16/23 scenarios, 535/550 D-items (97.3%). 3 DANGER: E03-h2, N06-h4, N06-h5.
+- **Linter:** all 23 authored programs are VALID.
+- **New findings:**
+  - F-61: binding identity is not procedural.
+  - F-62: stale `verified:` is ignored.
+  - F-63: unrequested FALLBACKs when authoring.
+- **Report:** `iterations/03/critic-report.md`.
+- **Direction agreed with the owner:**
+  - The target model is Sonnet.
+  - Haiku is measured only occasionally.
+  - Critical rules move into tools.
+  - Tests stay small because of usage limits.

@@ -74,6 +74,9 @@ Section names refer to headings in `dsl.md`.
 | F-58 | — | Preconditions | `field <f> is set`: "has a value" is undefined. | E1: CONF-E ×2 | open → v3 |
 | F-59 | — | Entities › TRANSITION | Failure conditions omit "entity no longer structurally valid". | E1: CONF-E-s1 #9 | open → v3 |
 | F-60 | — | Entities › Binding | A binding is checked once or continuously: not stated. | E1: CONF-E-h1 #4 | open → v3 |
+| F-61 | — | Entities › Binding | The v3 identity rule ("two declarers → not satisfied") is declarative; Haiku still binds one of two files with the same id (DANGER, repeated from E1). | Test 3: E03-h2 | open → v4 (make procedural: list and count files) |
+| F-62 | — | Entities › Preconditions | `verified:` expiry after a data change is stated once; Haiku ignores it and transitions (DANGER ×2). | Test 3: N06-h4, N06-h5 | open → v4 (procedural check + example) |
+| F-63 | — | FALLBACK (authoring) | No rule limits what an authored FALLBACK may do; Haiku adds unrequested FALLBACKs, one of which moves an entity on a non-answer. | Test 3: E11-h2, N09-h5, S01-h5 | open → v4 (authoring rule) |
 
 ---
 
