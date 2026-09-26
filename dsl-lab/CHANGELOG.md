@@ -76,3 +76,65 @@ Protocol: 35 scenarios × (3 Sonnet + 3 Haiku 4.5) blind probes and 2 CONF probe
 - `docs/adr/`: ADR-0001…ADR-0014, all `Proposed`. They record the decisions so far: model as interpreter, Haiku minimum, decision HITL, AUTO prefix, closed VERIFY outcomes, the failure rule, BREAK×FORK, DELEGATE completion, WAIT, the Entity Model, DSL entity integration, terminology, the undecidable VERIFY, and the test method.
 - `docs/tasks/`: TASK-0001…TASK-0012, all `Todo`. They cover findings F-36…F-51, scenario fixes, the entity test, Test 3 and status conditions. `findings.md` links each finding to its task.
 - `tools/entitycheck.py`: checks entity files against their Template (fields, id format, declared status, required sections, duplicate ids). All 26 files are VALID.
+
+## Entity test E1 (2026-09-25)
+Protocol: 12 entity scenarios × (5 Haiku + 2 Sonnet) against a frozen fixture, plus 2 CONF probes; 3 critics. Report: `iterations/E1/critic-report.md`.
+- **Sonnet:** 11/12 scenarios, 109/110 D-items; 12/12 after the scenario fix.
+- **Haiku:** 8/12 scenarios, 264/275 D-items; 97.1% adjusted. **1 DANGER** (E03-h2: resolved a duplicate identity by file name and changed the file).
+- **Held in every probe:** AUTO cannot satisfy `human:`; undeclared transition → FALLBACK; undecidable VERIFY → stop; re-read after DELEGATE; ADR acceptance flow.
+- **New findings:** F-52…F-60. Two are high risk (F-55 stale `verified:`, F-56 `human:` not tied to the entity).
+
+## DSL v3 (2026-09-25, owner-approved)
+Implements TASK-0001…0009 and E1 findings F-52…F-60:
+- **HITL:**
+  - A response that clearly means one answer counts, even with extra comments or requests. Added an examples table.
+  - Instructions inside a response add nothing.
+  - The runtime alone decides "unavailable".
+- **AUTO:** "certain **and** within the agent's authority" is now in the defining sentence and the Quick reference.
+- **WHEN:**
+  - Execution continues with the next statement in the same block.
+  - At the end of a loop body, the loop restarts. This is stated in rule 2 and the WHEN table.
+  - Rule 7 covers other established outcomes.
+- **FORK:** the table now matches V3. Added an example of a valid BREAK of a loop nested in a branch.
+- **Validity rules:**
+  - V1 covers lines that match no form.
+  - V7 allows a HITL name equal to a DELEGATE/EMIT/REQUIRE argument.
+  - V10 is judged on the program text only.
+  - `invalid` examples list the rules they break.
+- **VERIFY:** `VERIFY x` evaluates the result named `x`; it needs no `DELEGATE x`.
+- **Trace:**
+  - Line 0 is the validity verdict.
+  - A LOOP's first entry writes no line.
+  - HITL outcomes are marked `(human)` or `(agent)`.
+  - `stop` is the last line.
+  - Evidence is named per criterion.
+- **Entities:**
+  - Identity comes from `id` only; two declarers means not satisfied.
+  - An unsatisfied binding is an execution failure, not INVALID.
+  - Bindings are resolved once.
+  - TRANSITION requires structural validity.
+  - `verified:` expires after any data change.
+  - `human:` requires the HITL question to contain the entity identity.
+  - `field … is set` means present and not empty.
+- **Task Definition:** delegated work may edit Acceptance Criteria only in Todo, InProgress or Debugging.
+- **Scenarios:** S05 now asks for every rule, S21 asks for the verdict, and E11 D5 was relaxed. Added N01–N10 (`scenarios-hard/`).
+- **Tasks:** TASK-0001…0009 and TASK-0011 moved to InProgress.
+
+## Test 3 (2026-09-26, partial, stopped by owner)
+
+- **Probed:** DSL v3.
+- **Ran:** 163 of 366 probes.
+- **Graded:** E01–E12, N01–N10 and S01, each with 5 Haiku probes and 2 Sonnet probes.
+- **Sonnet:** 23/23 scenarios, 215/215 D-items.
+- **Haiku:** 16/23 scenarios, 535/550 D-items (97.3%). 3 DANGER: E03-h2, N06-h4, N06-h5.
+- **Linter:** all 23 authored programs are VALID.
+- **New findings:**
+  - F-61: binding identity is not procedural.
+  - F-62: stale `verified:` is ignored.
+  - F-63: unrequested FALLBACKs when authoring.
+- **Report:** `iterations/03/critic-report.md`.
+- **Direction agreed with the owner:**
+  - The target model is Sonnet.
+  - Haiku is measured only occasionally.
+  - Critical rules move into tools.
+  - Tests stay small because of usage limits.
