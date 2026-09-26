@@ -1,4 +1,4 @@
-# Ambiguities, Contradictions, and Missing Rules in go_harness Entities
+# Ambiguities, Contradictions, and Missing Rules in DSL Entities
 
 ## HIGH RISK
 

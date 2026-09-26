@@ -1,4 +1,4 @@
-# Ambiguities in `go_harness` DSL — HITL / AUTO / FALLBACK / WHEN
+# Ambiguities in `DSL` DSL — HITL / AUTO / FALLBACK / WHEN
 
 Scope note: per the task, this list draws only on the `<specification>` block given. No implementation choice is assumed beyond what the text requires; every point below is a place where the text itself under-determines behavior for someone who has to write or execute a process with it.
 

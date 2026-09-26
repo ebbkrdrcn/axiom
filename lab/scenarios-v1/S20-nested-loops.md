@@ -3,7 +3,7 @@
 Type: interpretation · Edge cases: BREAK target, LOOP names (F-14)
 
 ## Task
-Consider this go_harness DSL:
+Consider this DSL:
 ```text
 LOOP:release
   LOOP:fix

@@ -1,6 +1,6 @@
-# go_harness DSL
+# DSL
 
-A go_harness program describes a process. An agent reads the program and either **writes** it (from a requirement) or **executes** it (step by step). This specification is written so that both are unambiguous: every rule is stated once, in the section of the construct it belongs to, and the **Quick reference** summarises all of them.
+A DSL program describes a process. An agent reads the program and either **writes** it (from a requirement) or **executes** it (step by step). This specification is written so that both are unambiguous: every rule is stated once, in the section of the construct it belongs to, and the **Quick reference** summarises all of them.
 
 Words in capitals have a fixed meaning:
 

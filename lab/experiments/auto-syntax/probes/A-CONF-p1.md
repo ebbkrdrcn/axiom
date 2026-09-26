@@ -1,4 +1,4 @@
-# Ambiguities and gaps in the go_harness DSL — focus on HITL, AUTO, FALLBACK, and WHEN
+# Ambiguities and gaps in the DSL — focus on HITL, AUTO, FALLBACK, and WHEN
 
 Scope and method: this analysis uses only the text of the specification supplied
 in `A-CONF.md`. It focuses on `HITL`, `AUTO`, `FALLBACK`, and their interaction

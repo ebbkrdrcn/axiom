@@ -1,7 +1,7 @@
 # X06 — Interpretation: which decisions may the agent make?
 
 ## Task
-Consider this go_harness DSL:
+Consider this DSL:
 ```text
 AUTO
 HITL:wording("Short or detailed release notes?")

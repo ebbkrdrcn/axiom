@@ -3,7 +3,7 @@
 Type: interpretation · Edge cases: after WAIT
 
 ## Task
-Consider this go_harness DSL:
+Consider this DSL:
 ```text
 DELEGATE data-migration
 WAIT

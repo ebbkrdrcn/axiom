@@ -3,7 +3,7 @@
 Type: execution trace · Edge cases: what happens after a fallback flow (F-11)
 
 ## Task
-Consider this go_harness DSL:
+Consider this DSL:
 ```text
 HITL("Which region should we deploy to?")
   → FALLBACK

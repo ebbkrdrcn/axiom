@@ -3,7 +3,7 @@
 Type: execution trace · Edge cases: when FALLBACK triggers, HITL no response
 
 ## Task
-Consider this go_harness DSL:
+Consider this DSL:
 ```text
 DELEGATE release-notes
 HITL("Approve the release notes?")

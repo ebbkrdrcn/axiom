@@ -1,7 +1,7 @@
 # X01 — Authoring: one auto-resolvable decision
 
 ## Task
-Write go_harness DSL for the following requirement:
+Write DSL for the following requirement:
 
 "Delegate the implementation and verify it. Then a merge decision is needed. The agent may make the merge decision itself when it is clearly determined by the available information and criteria; otherwise a human must be asked "Merge this change?". If the decision is to merge, transition to state "Merged". If the decision is not to merge, transition to state "Rework". If the human gives no usable answer, transition to state "Blocked" and stop."
 

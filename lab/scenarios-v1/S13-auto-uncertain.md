@@ -3,7 +3,7 @@
 Type: execution trace · Edge cases: AUTO syntax, AUTO↔HITL binding, AUTO uncertain
 
 ## Task
-Consider this go_harness DSL:
+Consider this DSL:
 ```text
 DELEGATE dependency-upgrade
 VERIFY dependency-upgrade

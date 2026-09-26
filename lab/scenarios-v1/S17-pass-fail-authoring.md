@@ -3,7 +3,7 @@
 Type: authoring · Edge cases: VERIFY outcome names in WHEN (F-03), multiple WHENs
 
 ## Task
-Write go_harness DSL for the following requirement:
+Write DSL for the following requirement:
 
 "Delegate the test suite, then verify it. If the tests pass, move to state "Review". If the tests fail, move to state "Debugging" and delegate a diagnosis."
 

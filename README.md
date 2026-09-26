@@ -11,11 +11,12 @@ Axiom is a stateless **rulebook and interpreter** (ADR-0021).
 | Directory | Contents |
 |---|---|
 | [`VISION.md`](VISION.md) | the vision |
-| [`ROADMAP.md`](ROADMAP.md) | the milestones M0–M6 |
+| [`ROADMAP.md`](ROADMAP.md) | points to the roadmap: Milestone entities in `docs/roadmap/` |
+| [`CONTRIBUTING.md`](CONTRIBUTING.md) | points to the conventions: Convention entities in `docs/contributing/` |
 | [`spec/`](spec/) | the DSL (`dsl.md`) and the Entity Model (`entity-model.md`) |
 | [`rules/`](rules/) | entity types, protocols and actor definitions: the source of truth |
 | [`runtime/`](runtime/) | the interpreter, MCP server and CLI (not built yet) |
 | [`templates/`](templates/) | the `AGENT.md` template and the `docs/` skeleton (not built yet) |
 | [`tests/`](tests/) | runtime tests (not built yet) |
 | [`lab/`](lab/) | the test corpus, tools, findings, [status](lab/STATUS.md) and [next steps](lab/NEXT.md) |
-| [`docs/`](docs/) | axiom's own ADRs and Tasks, used to develop axiom |
+| [`docs/`](docs/_index.md) | axiom's own knowledge: ADRs, Tasks, conventions and the roadmap. Start at `docs/_index.md` |

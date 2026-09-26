@@ -1,10 +1,10 @@
-# go_harness Entity Model
+# Entity Model
 
 ## Purpose
 
-This document defines the entities that go_harness DSL processes operate on: what an entity is, which contracts govern it, and how a process refers to it.
+This document defines the entities that DSL processes operate on: what an entity is, which contracts govern it, and how a process refers to it.
 
-go_harness has no mandatory runtime.
+DSL has no mandatory runtime.
 
 The interpreter of a process is the model executing it. The model is in the same position as a developer following a team's methodology: a developer produces consistent results not because a program enforces them, but because the work, its context, and the rules are explicitly defined.
 

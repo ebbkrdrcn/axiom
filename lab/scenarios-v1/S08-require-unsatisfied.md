@@ -3,7 +3,7 @@
 Type: interpretation · Edge cases: unsatisfied REQUIRE
 
 ## Task
-Consider this go_harness DSL:
+Consider this DSL:
 ```text
 REQUIRE staging-credentials
 DELEGATE deployment

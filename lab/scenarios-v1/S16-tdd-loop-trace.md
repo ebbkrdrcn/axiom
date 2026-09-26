@@ -3,7 +3,7 @@
 Type: execution trace · Edge cases: multi-line WHEN flows, BREAK, outcome names given by events
 
 ## Task
-Consider this go_harness DSL:
+Consider this DSL:
 ```text
 LOOP:tdd
   DELEGATE implementation

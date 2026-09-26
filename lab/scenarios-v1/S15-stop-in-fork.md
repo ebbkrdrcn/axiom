@@ -3,7 +3,7 @@
 Type: execution trace · Edge cases: STOP vs concurrent branches
 
 ## Task
-Consider this go_harness DSL:
+Consider this DSL:
 ```text
 FORK
   → DELEGATE lint

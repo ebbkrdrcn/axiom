@@ -1,4 +1,4 @@
-# Findings: go_harness DSL (`dsl.md`)
+# Findings: DSL (`spec/dsl.md`)
 
 Status values:
 

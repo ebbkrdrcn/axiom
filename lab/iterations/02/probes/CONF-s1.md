@@ -1,4 +1,4 @@
-# Ambiguities, Contradictions, and Underspecified Points in the go_harness DSL Spec
+# Ambiguities, Contradictions, and Underspecified Points in the DSL Spec
 
 Method note: this list uses only the text of the specification given. No item below required an outside assumption to *identify*; where I describe how a reader/implementer would have to fill a gap, that is the assumption they would be forced to invent, not one I am importing from elsewhere. Items are ordered from most to least likely to cause a wrong process or a wrong execution.
 
