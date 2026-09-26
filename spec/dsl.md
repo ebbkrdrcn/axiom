@@ -22,6 +22,7 @@ Code blocks are labelled:
 
 | Statement | Meaning | Key rule |
 |---|---|---|
+| `INPUT <name>:<Type>` | declare an input: the caller gives the entity's identity | first lines of the program; not given or not satisfied → execution does not start |
 | `<name>:<Type> = <identity>` | bind a name to an entity | top of the program only; not satisfied → execution ends |
 | `<name>:<Type> = <bound>.<relation>` | bind the target of a relation | same as above |
 | `LOOP:<name>` | repeat the indented body | end of body → start body again; only `BREAK` or `STOP` ends it |
@@ -41,6 +42,8 @@ Code blocks are labelled:
 | `HITL("<request>")` | ask a human for input or an action | establishes no outcome |
 | `AUTO HITL:<name>[…]("…")` | the agent MAY answer, only if the decision is certain and within its authority | otherwise → the human is asked |
 | `→ FALLBACK` | flow for a failed `HITL`, `REQUIRE`, `VERIFY` or entity `TRANSITION` | MUST end with `STOP` or `BREAK` |
+
+In the question or request of a `HITL`, `{<name>}` stands for the identity of the entity bound to `<name>`.
 
 ### Who decides a `HITL`
 
@@ -62,7 +65,7 @@ Code blocks are labelled:
 8. A usable answer continues with the statement after the `HITL` construct. An unusable or missing answer runs the `FALLBACK`, or ends execution if there is none.
 9. The agent MUST NOT invent a response, a result, an outcome, or a requirement. A `HITL` is answered only by a response to that `HITL` given after it is reached, or by the agent under `AUTO`.
 10. When the last top-level statement is done, execution ends normally.
-11. Bindings are resolved once, first, top to bottom. If one is not satisfied, execution ends, as with `STOP`. This is an execution failure, not a validity error.
+11. Inputs and bindings are resolved once, first, top to bottom. If an input is not given, or an input or binding is not satisfied, execution ends, as with `STOP`. This is an execution failure, not a validity error.
 12. An operation that fails (see **Failures**) runs its `FALLBACK`, or ends execution if it has none. A failed operation changes nothing and establishes no outcome; the agent MUST NOT substitute another result.
 
 ---
@@ -526,6 +529,22 @@ Two different things are called "state" and "status":
 - the **process state** is set by `TRANSITION "<state>"` and belongs to the execution;
 - the **entity status** is set by `TRANSITION <name> "<status>"` and is stored in the entity.
 
+### Input
+
+```form
+INPUT <name>:<Type>
+```
+
+An input is a binding whose identity the caller gives when it starts the execution, for example `t=TASK-0001`. A program with inputs runs for any entity of that type.
+
+- Inputs are written first, before every binding and every other statement, without indentation (V11).
+- The caller gives one identity for each input, by name. If an input is not given, or the caller names something that is not an input, execution ends before any statement runs.
+- Everything below about bindings also holds for an input.
+
+### References in text
+
+In the question or request of a `HITL`, `{<name>}` stands for the identity of the entity bound to `<name>`, for example `"Is {t} done?"`. It is replaced when the statement runs. The name MUST be bound (V12). `{` and `}` appear in a text only in this form.
+
 ### Binding
 
 ```form
@@ -583,7 +602,7 @@ A Definition writes each precondition in one of these forms. If a change lists s
 | `none` | always |
 | `verified: accepted` | the most recent `VERIFY <name>` in this execution established `<name>.accepted`, **and** the entity's data has not changed since that `VERIFY` (other than by `TRANSITION <name>`) |
 | `verified: rejected` | the most recent `VERIFY <name>` in this execution established `<name>.rejected`, **and** the entity's data has not changed since that `VERIFY` (other than by `TRANSITION <name>`) |
-| `human: <answer>` | the `TRANSITION` is inside the flow of a `WHEN <h>.<answer>`, `HITL:<h>` has no `AUTO`, **and** the question of `HITL:<h>` contains the entity's identity (for example `"Is TASK-0101 done?"`) |
+| `human: <answer>` | the `TRANSITION` is inside the flow of a `WHEN <h>.<answer>`, `HITL:<h>` has no `AUTO`, **and** the question of `HITL:<h>` contains the entity's identity, written out or as `{<name>}` (for example `"Is TASK-0101 done?"` or `"Is {t} done?"`) |
 | `field <field> is set` | the entity's field `<field>` is present and not empty |
 
 A `human:` precondition can only be satisfied by a human's answer to a `HITL` without `AUTO`. The agent can never satisfy it.
@@ -653,6 +672,37 @@ REQUIRE repository
 t1:Task = TASK-0001
 ```
 
+An input after a binding (V11):
+
+```invalid
+a1:ADR = ADR-0003
+INPUT t:Task
+VERIFY t
+```
+
+A reference to a name that is not bound (V12):
+
+```invalid
+INPUT t:Task
+HITL:done[approved, rejected]("Is {task} done?")
+```
+
+A program with an input runs for the Task the caller gives, for example `t=TASK-0001`:
+
+```text
+INPUT t:Task
+a:ADR = t.adr
+DELEGATE implementation
+VERIFY t
+  → FALLBACK
+      → STOP
+WHEN t.accepted
+  → TRANSITION t "Review"
+HITL:done[approved, rejected]("Is {t} done?")
+WHEN done.approved
+  → TRANSITION t "Done"
+```
+
 A transition that the Definition does not permit (for example `TRANSITION t1 "Done"` while the task is `InProgress`) is not INVALID: the program is well-formed, and the transition fails when it is executed.
 
 ---
@@ -683,6 +733,7 @@ Each statement is one line. Blank lines are ignored.
 
 | Form | Keywords |
 |---|---|
+| `INPUT <name>:<Type>` | input |
 | `<name>:<Type> = <identity>` or `<name>:<Type> = <name>.<relation>` | binding |
 | `<keyword> <argument>` | `REQUIRE`, `DELEGATE`, `VERIFY`, `EMIT` (identifier); `TRANSITION` (string) |
 | `TRANSITION <name> "<status>"` | `TRANSITION` on an entity |
@@ -735,7 +786,7 @@ The flow is `DELEGATE correction`, then `VERIFY correction`, then `TRANSITION "R
 
 - An identifier consists of letters, digits, `-` and `_`, and starts with a letter. Names, Entity Types, identities and relations are identifiers.
 - A `.` separates subject and outcome in a condition; it is not part of an identifier.
-- Strings are enclosed in `"…"`.
+- Strings are enclosed in `"…"`. The question or request of a `HITL` is a **text**: a string that may contain references `{<name>}`. No other string contains `{` or `}`.
 
 ## Validity rules
 
@@ -753,15 +804,16 @@ A program that breaks any of these rules is INVALID. It MUST be rejected as a wh
 | V8 | the last item of a fallback flow is not `STOP` or `BREAK` |
 | V9 | a `JOIN` has no corresponding `FORK`, or a `FORK` has fewer than two branches |
 | V10 | a `WHEN` tests a subject that a branch of a `FORK` in the same flow establishes, and no `JOIN` of that `FORK` is written between the `FORK` and the `WHEN`. Judged on the program text only: a `FORK` without a `JOIN` makes its branch outcomes untestable in that flow. |
-| V11 | a binding is indented, or follows a statement that is not a binding, or binds a name that is already bound, or its relation starts from a name not bound on an earlier line |
-| V12 | `TRANSITION <name> "<status>"` uses a name that is not bound, or a bound name is used as a `HITL` name |
+| V11 | an input or binding is indented; an input follows anything other than an input; a binding follows a statement that is neither an input nor a binding; a name is bound twice (as an input or a binding); or a relation starts from a name not bound on an earlier line |
+| V12 | `TRANSITION <name> "<status>"` uses a name that is not bound, a bound name is used as a `HITL` name, or a `{<name>}` in a text uses a name that is not bound |
 
 ## Grammar (EBNF)
 
 `INDENT` and `DEDENT` mean one level deeper and back, as defined in **Indentation and scope**.
 
 ```ebnf
-program   = { binding } , block ;
+program   = { input } , { binding } , block ;
+input     = "INPUT" , identifier , ":" , identifier , NL ;
 binding   = identifier , ":" , identifier , "=" , identifier , [ "." , identifier ] , NL ;
 block     = statement , { statement } ;
 statement = loop | when | fork | hitl | require | verify | etrans | simple ;
@@ -770,7 +822,7 @@ loop      = "LOOP:" , identifier , NL , INDENT , block , DEDENT ;
 when      = "WHEN" , identifier , "." , identifier , NL , INDENT , flow , DEDENT ;
 fork      = "FORK" , NL , INDENT , item , item , { item } , DEDENT ;
 hitl      = ( [ "AUTO" ] , "HITL:" , identifier , "[" , identifier , { "," , identifier } , "]"
-            | "HITL" ) , "(" , string , ")" , NL , [ fallback ] ;
+            | "HITL" ) , "(" , text , ")" , NL , [ fallback ] ;
 require   = "REQUIRE" , identifier , NL , [ fallback ] ;
 verify    = "VERIFY" , identifier , NL , [ fallback ] ;
 etrans    = "TRANSITION" , identifier , string , NL , [ fallback ] ;
@@ -783,7 +835,8 @@ simple    = ( "DELEGATE" | "EMIT" ) , identifier , NL
           | "TRANSITION" , string , NL
           | ( "JOIN" | "BREAK" | "WAIT" | "STOP" ) , NL ;
 identifier = letter , { letter | digit | "-" | "_" } ;
-string     = '"' , { character - '"' } , '"' ;
+string     = '"' , { character - ( '"' | "{" | "}" ) } , '"' ;
+text       = '"' , { character - ( '"' | "{" | "}" ) | "{" , identifier , "}" } , '"' ;
 ```
 
 ---
@@ -912,7 +965,7 @@ In particular:
 - `VERIFY` defines evaluation, not the verification implementation.
 - `TRANSITION` defines a state change, not state-storage mechanics.
 - `EMIT` defines an output, not its storage or transport mechanism.
-- A binding refers to an entity by identity, not to a file or a storage location.
+- A binding refers to an entity by identity, not to a file or a storage location. An input leaves the identity to the caller.
 - `WAIT` defines suspension, not the event mechanism.
 - `HITL` defines a human interaction boundary, not the UI or communication mechanism.
 - `AUTO` defines when automatic decision resolution is permitted, not an algorithm or confidence threshold.

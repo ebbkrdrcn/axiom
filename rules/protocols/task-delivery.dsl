@@ -1,4 +1,4 @@
-t:Task = TASK-0100
+INPUT t:Task
 a:ADR = t.adr
 TRANSITION "Specifying"
 LOOP:specification
@@ -10,7 +10,7 @@ LOOP:specification
           → STOP
     WHEN spec.accepted
       → BREAK
-  HITL:spec-review[approved, revise]("Approve the spec of TASK-0100?")
+  HITL:spec-review[approved, revise]("Approve the spec of {t}?")
     → FALLBACK
         → TRANSITION "Waiting"
         → STOP
@@ -37,7 +37,7 @@ LOOP:delivery
       → TRANSITION t "Review"
       → BREAK
   TRANSITION "Reviewing"
-  HITL:review[approved, changes]("Is TASK-0100 done?")
+  HITL:review[approved, changes]("Is {t} done?")
     → FALLBACK
         → TRANSITION "Waiting"
         → STOP

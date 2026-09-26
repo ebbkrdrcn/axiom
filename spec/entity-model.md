@@ -315,7 +315,7 @@ The relationship between Data and representation is defined as follows:
 
 # Entities in the DSL
 
-The DSL forms below (binding, `VERIFY <name>`, `TRANSITION <name> "<status>"`), their validity rules (V11, V12) and their failure behaviour are defined normatively in `dsl.md`, section **Entities**. This section explains them in terms of the Entity Model.
+The DSL forms below (input, binding, `VERIFY <name>`, `TRANSITION <name> "<status>"`), their validity rules (V11, V12) and their failure behaviour are defined normatively in `dsl.md`, section **Entities**. This section explains them in terms of the Entity Model.
 
 ## Binding
 
@@ -334,6 +334,8 @@ t1:Task = TASK-0001
 This means:
 
 > Within this process, `t1` refers to the entity whose identity is `TASK-0001`, which must be of type `Task`.
+
+An input (`INPUT <name>:<Type>`) is a binding whose identity the caller gives when it starts the execution. Everything in this section holds for it too (ADR-0022).
 
 A binding is a **reference**, not a copy.
 

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""dslcheck: parser and validity checker (rules V1-V12) for the DSL.
+"""dslcheck: parser and validity checker (rules V1-V12) for the DSL, including INPUT and {name} references (ADR-0022).
 
 usage: dslcheck.py FILE...      (each file = one program)
        dslcheck.py --md FILE    (check every ```text block in a markdown file)
@@ -24,6 +24,13 @@ class Node:
         return f"{'→ ' if self.arrow else ''}{self.kind}@{self.line_no}"
 
 
+def text_refs(text):
+    """Names referenced as {name} in a text, or None if a brace is malformed."""
+    refs = re.findall(rf"\{{({IDENT})\}}", text)
+    rest = re.sub(rf"\{{{IDENT}\}}", "", text)
+    return None if "{" in rest or "}" in rest else refs
+
+
 def parse_stmt(text):
     """Return (kind, attrs) for a statement text, or (None, error)."""
     t = text.strip()
@@ -38,13 +45,16 @@ def parse_stmt(text):
     m = re.fullmatch(rf"(REQUIRE|DELEGATE|VERIFY|EMIT) ({IDENT})", t)
     if m:
         return m[1], {"arg": m[2]}
+    m = re.fullmatch(rf"INPUT ({IDENT}):({IDENT})", t)
+    if m:
+        return "INPUT", {"name": m[1], "type": m[2]}
     m = re.fullmatch(rf"({IDENT}):({IDENT}) = ({IDENT})(?:\.({IDENT}))?", t)
     if m:
         return "BIND", {"name": m[1], "type": m[2], "target": m[3], "relation": m[4]}
-    m = re.fullmatch(rf'TRANSITION ({IDENT}) "([^"]+)"', t)
+    m = re.fullmatch(rf'TRANSITION ({IDENT}) "([^"{{}}]+)"', t)
     if m:
         return "ETRANS", {"name": m[1], "arg": m[2]}
-    m = re.fullmatch(r'TRANSITION "([^"]+)"', t)
+    m = re.fullmatch(r'TRANSITION "([^"{}]+)"', t)
     if m:
         return "TRANSITION", {"arg": m[1]}
     m = re.fullmatch(rf'(AUTO )?HITL:({IDENT})\[([^\]]*)\]\("([^"]*)"\)', t)
@@ -52,10 +62,16 @@ def parse_stmt(text):
         answers = [a.strip() for a in m[3].split(",")] if m[3].strip() else []
         if any(not re.fullmatch(IDENT, a) for a in answers):
             return None, "V1: malformed answer list"
-        return "HITL", {"auto": bool(m[1]), "name": m[2], "answers": answers}
+        refs = text_refs(m[4])
+        if refs is None:
+            return None, "V1: '{' and '}' in a text must enclose a name"
+        return "HITL", {"auto": bool(m[1]), "name": m[2], "answers": answers, "refs": refs}
     m = re.fullmatch(r'HITL\("([^"]*)"\)', t)
     if m:
-        return "HITL", {"auto": False, "name": None, "answers": None}
+        refs = text_refs(m[1])
+        if refs is None:
+            return None, "V1: '{' and '}' in a text must enclose a name"
+        return "HITL", {"auto": False, "name": None, "answers": None, "refs": refs}
     if t.startswith("AUTO"):
         return None, "V5: AUTO must be immediately followed by a decision HITL:<name>[…](…) on the same line"
     if t == "FALLBACK":
@@ -177,10 +193,17 @@ def check_semantics(root, errors):
             errors.append(f"line {h.line_no}: V7: answer list empty or repeated")
         if h.name in verify:
             errors.append(f"line {h.line_no}: V7: name '{h.name}' used by both HITL and VERIFY")
-    # V11 / V12: bindings
-    bound, seen_other = {}, False
+    # V11 / V12: inputs and bindings
+    bound, seen_other, seen_bind = {}, False, False
     for n in nodes:
-        if n.kind == "BIND":
+        if n.kind == "INPUT":
+            if n.parent.kind != "PROGRAM" or n.arrow or seen_other or seen_bind:
+                errors.append(f"line {n.line_no}: V11: input must be at the top of the program, unindented, before bindings and other statements")
+            if n.name in bound:
+                errors.append(f"line {n.line_no}: V11: name '{n.name}' is already bound")
+            bound[n.name] = n
+        elif n.kind == "BIND":
+            seen_bind = True
             if n.parent.kind != "PROGRAM" or n.arrow or seen_other:
                 errors.append(f"line {n.line_no}: V11: binding must be at the top of the program, unindented, before other statements")
             if n.name in bound:
@@ -196,6 +219,10 @@ def check_semantics(root, errors):
     for h in hitls:
         if h.name in bound:
             errors.append(f"line {h.line_no}: V12: bound name '{h.name}' used as a HITL name")
+    for n in nodes:
+        for r in getattr(n, "refs", None) or []:
+            if r not in bound:
+                errors.append(f"line {n.line_no}: V12: text refers to '{{{r}}}', which is not bound")
     for n in nodes:
         if n.kind == "BREAK":
             loop = next((a for a in ancestors(n) if a.kind == "LOOP"), None)
