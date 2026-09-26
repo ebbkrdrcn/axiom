@@ -2,12 +2,13 @@
 
 ## Fields
 
-| Field  | Required | Format                                   |
-|--------|----------|------------------------------------------|
-| id     | yes      | `TASK-` followed by four digits          |
-| type   | yes      | `Task`                                   |
-| status | yes      | a status declared by the Task Definition |
-| adr    | no       | identity of an ADR                       |
+| Field     | Required | Format                                   |
+|-----------|----------|------------------------------------------|
+| id        | yes      | `TASK-` followed by four digits          |
+| type      | yes      | `Task`                                   |
+| status    | yes      | a status declared by the Task Definition |
+| adr       | no       | identity of an ADR                       |
+| milestone | no       | identity of a Milestone                  |
 
 ## Sections
 
@@ -19,6 +20,7 @@
 
 ## Relations
 
-| Relation | Field | Target | Cardinality |
-|----------|-------|--------|-------------|
-| adr      | adr   | ADR    | 0..1        |
+| Relation  | Field     | Target    | Cardinality |
+|-----------|-----------|-----------|-------------|
+| adr       | adr       | ADR       | 0..1        |
+| milestone | milestone | Milestone | 0..1        |

@@ -1,12 +1,12 @@
-# go_harness Entity Model
+# Entity Model
 
 ## Purpose
 
-This document defines the entities that go_harness DSL processes operate on: what an entity is, which contracts govern it, and how a process refers to it.
+This document defines the entities that DSL processes operate on: what an entity is, which contracts govern it, and how a process refers to it.
 
-go_harness has no mandatory runtime.
+The Entity Model does not depend on a particular runtime. Axiom interprets the process, and the model makes the judgements the process requires (ADR-0021).
 
-The interpreter of a process is the model executing it. The model is in the same position as a developer following a team's methodology: a developer produces consistent results not because a program enforces them, but because the work, its context, and the rules are explicitly defined.
+The model is in the same position as a developer following a team's methodology: a developer produces consistent results not because a program enforces them, but because the work, its context, and the rules are explicitly defined.
 
 The Entity Model serves the same purpose. It tells the interpreter:
 
@@ -564,6 +564,10 @@ The contracts and the instances live in different places.
   ```
 
   Every path in a representation mapping is relative to the target project's root.
+
+- **Every directory of `docs/` has an `_index.md` file.** It is a map of what is where, and agents read `docs/_index.md` first.
+  - `_index.md` is not an entity. Bindings, identity counts and checks ignore it.
+  - In an entity collection, the index lists the instances. That listing is generated and kept current by the operations that write entities. Only the description of the directory's purpose is written by hand.
 
 - `template.md` represents the Template.
 - `definition.md` represents the Definition.

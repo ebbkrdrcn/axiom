@@ -35,6 +35,7 @@ If an item cannot be evaluated (its evidence is unavailable or the item is ambig
 ## Relations
 
 - `adr`: the architectural decision that the work must conform to.
+- `milestone`: the roadmap stage the work belongs to.
 
 ## Permitted changes by delegated work
 

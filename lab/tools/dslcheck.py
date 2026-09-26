@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""dslcheck: parser and validity checker (rules V1-V12) for go_harness DSL.
+"""dslcheck: parser and validity checker (rules V1-V12) for the DSL.
 
 usage: dslcheck.py FILE...      (each file = one program)
        dslcheck.py --md FILE    (check every ```text block in a markdown file)
