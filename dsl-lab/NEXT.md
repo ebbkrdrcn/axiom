@@ -8,9 +8,32 @@ Last stop: 2026-09-26. Test 3 stopped part way at the owner's request because of
 - `iterations/03/critic-report.md`: Test 3 results, failures and proposed fixes.
 - `findings.md`: F-61…F-63 are the open items for v4.
 
+## Vision (agreed with the owner on 2026-09-26; see ADR-0015…0017, all Proposed)
+
+- **Single entry point.** A human intent in natural language. The human is always at the top.
+- **Recursive responsibility tree.** A supervisor splits the intent into sub-tasks and creates one Actor for each. An Actor is a Role together with a Protocol (a DSL program) and a Context. Supervisors can nest, and every node is responsible for its subtree.
+- **ASK replaces HITL (ADR-0016; the owner chose the name `ASK`).**
+  - A question escalates upward to the first node that is authorised to answer it.
+  - The answer returns down the same path.
+  - `@human` marks a decision only the human may answer.
+  - The precondition `human:` becomes `answered: <a> by human`.
+- **Mechanical layer (ADR-0017):**
+  - a harness MCP server that is the only writer of the ledger;
+  - Claude Code hooks: a PreToolUse lock on `status:`, and a PostToolUse on AskUserQuestion that records answers `by human`;
+  - a pre-commit guard.
+- **Context (ADR-0017).** Graphify builds actor context. Decisions use only `EXTRACTED` edges. A vector DB is deferred.
+- **Consequence for testing.** Actors may run on small models, so execution determinism (the Haiku DANGER errors) matters again. Revisit the "target model = Sonnet" decision with the owner.
+
+## Open questions for the owner
+
+1. May a node rephrase a question it passes upward? If so, the entity identity must survive.
+2. Is an answer shared between identical questions from different actors?
+3. How does `DELEGATE` name an Actor? Can a protocol call another protocol? Are protocols an approved library, or written per task?
+4. Do actors run as Claude Code subagents or as separate sessions?
+
 ## Next steps. Report to the owner in Turkish and wait for approval before and after each test.
 
-1. **DSL v4.** Change `dsl.md`, and `entity-model.md` if needed:
+1. **DSL v4.** Change `dsl.md`, and `entity-model.md` if needed. Include the `HITL` → `ASK` rename (ADR-0016) once the owner approves it:
    - **F-61, binding:** "List every file whose `id` equals the identity. Count them. If the count is not exactly 1, the binding is not satisfied."
    - **F-62, `verified:`:** "Before a TRANSITION with `verified:`, list every statement since that VERIFY that changed this entity. If the list is not empty, the precondition does not hold." Add an example.
    - **F-63, authoring:** "A FALLBACK does only what the requirement says to do on failure. It never transitions an entity and never stands in for a human answer."
